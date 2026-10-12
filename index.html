@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Arpan Manna — Network & Systems Infrastructure Engineer</title>
+    
+    <!-- Mandatory canonical and OG URL tags -->
+    <link rel="canonical" href="https://arwk.in">
+    <meta property="og:url" content="https://arwk.in">
+    <meta name="description" content="Production-ready portfolio of Arpan Manna, an aspiring Network Operations & Infrastructure Engineer in Contai, West Bengal. Lab topologies, routing architectures, Cisco Packet Tracer & GNS3 configurations.">
+
+    <!-- Fonts: Plus Jakarta Sans for UI and JetBrains Mono for Network Telemetry/CLI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    screens: {
+                        'xs': '420px',
+                        '2xl': '1536px',
+                        '3xl': '1920px',
+                        '4k': '2560px',
+                    },
+                    colors: {
+                        canvasBg: '#f8fafc',
+                        surfaceCard: '#ffffff',
+                        borderSubtle: '#e2e8f0',
+                        borderMid: '#cbd5e1',
+                        inkBlack: '#0f172a',
+                        inkSlate: '#334155',
+                        inkMuted: '#64748b',
+                        ciscoBlue: '#0284c7',
+                        ciscoNavy: '#0369a1',
+                        lanGreen: '#059669',
+                        alertAmber: '#d97706',
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+                    },
+                    fontSize: {
+                        '3xs': ['0.625rem', { lineHeight: '0.85rem' }],
+                        '2xs': ['0.6875rem', { lineHeight: '1rem' }],
+                        'xs': ['0.75rem', { lineHeight: '1.15rem' }],
+                        'sm': ['0.8125rem', { lineHeight: '1.25rem' }],
+                        'base': ['0.875rem', { lineHeight: '1.4rem' }],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Smooth micro-aesthetics for light canvas */
+        body {
+            background-color: #fbfbf9;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.18) 1.2px, transparent 0);
+            background-size: 28px 28px;
+        }
+
+        #network-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: auto;
+            z-index: 1;
+            opacity: 0.95;
+        }
+
+        /* Glass and Card tactile layers */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+        }
+
+        .human-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
+            transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease;
+        }
+        .human-card:hover {
+            border-color: #94a3b8;
+            box-shadow: 0 6px 18px -4px rgba(15, 23, 42, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .code-tag {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            padding: 0.125rem 0.4rem;
+            border-radius: 0.25rem;
+        }
+
+        /* Radar beacon & ping pulse */
+        .status-beacon {
+            position: relative;
+        }
+        .status-beacon::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 9999px;
+            background-color: inherit;
+            animation: radar-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+            opacity: 0.75;
+        }
+        @keyframes radar-ping {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2.4); opacity: 0; }
+        }
+
+        /* Page transition states */
+        .spa-page {
+            display: none;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.22s ease-out, transform 0.22s ease-out;
+        }
+        .spa-page.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Sub-tab view states */
+        .subview {
+            display: none;
+        }
+        .subview.active {
+            display: block;
+            animation: subfadeIn 0.2s ease-out;
+        }
+        @keyframes subfadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Subtle scrollbars */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="min-h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-sky-100 selection:text-sky-900">
+
+    <!-- Interactive Light Canvas Network Animation -->
+    <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+    <!-- Top Sticky NOC Status & Global Router Navigation -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-200/90 shadow-xs">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 2xl:max-w-[1720px] 4k:max-w-[2200px]">
+            <div class="flex items-center justify-between h-14">
+                
+                <!-- Brand / Identity -->
+                <div class="flex items-center gap-3">
+                    <button onclick="navigate('dashboard')" class="flex items-center gap-2.5 text-left group focus:outline-none">
+                        <div class="w-7 h-7 rounded bg-slate-900 text-white flex items-center justify-center font-mono text-2xs font-bold group-hover:bg-sky-600 transition-colors shadow-xs">
+                            AM
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-1.5 leading-tight">
+                                <span class="font-bold text-xs sm:text-sm text-slate-900 tracking-tight">Arpan Manna</span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 status-beacon inline-block"></span>
+                            </div>
+                            <div class="text-3xs font-mono text-slate-500 flex items-center gap-1">
+                                <span>NOC-LAB::AS65001</span>
+                                <span class="text-slate-300 hidden xs:inline">•</span>
+                                <span class="hidden xs:inline text-sky-700">Contai, WB, IN</span>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Desktop / Tablet Page Nav Pills (Router Links) -->
+                <nav class="hidden md:flex items-center gap-1 text-2xs font-mono" id="desktopNav">
+                    <button onclick="navigate('dashboard')" data-route="dashboard" class="nav-btn px-2.5 py-1.5 rounded-md font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all flex items-center gap-1.5">
+                        <span class="w-1 h-1 rounded-full bg-slate-400"></span>
+                        Dashboard
+                    </button>
+                    <button onclick="navigate('topologies')" data-route="topologies" class="nav-btn px-2.5 py-1.5 rounded-md font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all flex items-center gap-1.5">
+                        <span class="w-1 h-1 rounded-full bg-slate-400"></span>
+                        Topologies & Labs
+                    </button>
+                    <button onclick="navigate('protocols')" data-route="protocols" class="nav-btn px-2.5 py-1.5 rounded-md font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all flex items-center gap-1.5">
+                        <span class="w-1 h-1 rounded-full bg-slate-400"></span>
+                        Protocol Matrix
+                    </button>
+                    <button onclick="navigate('terminal')" data-route="terminal" class="nav-btn px-2.5 py-1.5 rounded-md font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all flex items-center gap-1.5">
+                        <span class="w-1 h-1 rounded-full bg-slate-400"></span>
+                        IOS Terminal
+                    </button>
+                    <button onclick="navigate('credentials')" data-route="credentials" class="nav-btn px-2.5 py-1.5 rounded-md font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all flex items-center gap-1.5">
+                        <span class="w-1 h-1 rounded-full bg-slate-400"></span>
+                        Education
+                    </button>
+                    <button onclick="navigate('dispatch')" data-route="dispatch" class="nav-btn px-2.5 py-1.5 rounded-md font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all flex items-center gap-1.5">
+                        <span class="w-1 h-1 rounded-full bg-slate-400"></span>
+                        Contact
+                    </button>
+                </nav>
+
+                <!-- Quick Action Bar -->
+                <div class="flex items-center gap-2">
+                    <button onclick="navigate('dispatch')" class="px-2.5 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-white font-mono text-2xs font-medium transition shadow-xs flex items-center gap-1.5">
+                        <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg>
+                        <span>Connect</span>
+                    </button>
+                    <!-- Mobile Hamburger Toggle -->
+                    <button onclick="toggleMobileMenu()" id="menuToggle" aria-label="Toggle navigation menu" class="md:hidden p-1.5 rounded border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Dropdown Navigation Menu -->
+            <div id="mobileMenu" class="hidden md:hidden pb-3 pt-1 border-t border-slate-100 flex flex-col gap-1 font-mono text-xs">
+                <button onclick="navigate('dashboard'); toggleMobileMenu()" class="text-left px-3 py-2 rounded text-slate-700 hover:bg-slate-100">Dashboard</button>
+                <button onclick="navigate('topologies'); toggleMobileMenu()" class="text-left px-3 py-2 rounded text-slate-700 hover:bg-slate-100">Topologies & Labs</button>
+                <button onclick="navigate('protocols'); toggleMobileMenu()" class="text-left px-3 py-2 rounded text-slate-700 hover:bg-slate-100">Protocol Matrix</button>
+                <button onclick="navigate('terminal'); toggleMobileMenu()" class="text-left px-3 py-2 rounded text-slate-700 hover:bg-slate-100">IOS Terminal (Interactive)</button>
+                <button onclick="navigate('credentials'); toggleMobileMenu()" class="text-left px-3 py-2 rounded text-slate-700 hover:bg-slate-100">Education & History</button>
+                <button onclick="navigate('dispatch'); toggleMobileMenu()" class="text-left px-3 py-2 rounded text-slate-700 hover:bg-slate-100">Dispatch / Contact</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dynamic Breadcrumb bar simulating router URI hierarchy -->
+    <div class="relative z-10 bg-slate-100/80 border-b border-slate-200/80 py-1.5 px-3 sm:px-6">
+        <div class="max-w-7xl mx-auto 2xl:max-w-[1720px] 4k:max-w-[2200px] flex items-center justify-between text-3xs font-mono text-slate-500">
+            <div class="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap" id="breadcrumbTrail">
+                <span class="text-slate-400">gateway://</span>
+                <button onclick="navigate('dashboard')" class="hover:text-slate-900 text-slate-700">noc</button>
+                <span class="text-slate-300">/</span>
+                <span id="bcSub" class="text-sky-700 font-semibold">dashboard</span>
+            </div>
+            <div class="hidden sm:flex items-center gap-3">
+                <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Topology: Converged</span>
+                <span>•</span>
+                <span id="canvasPacketStats">Rx/Tx: 142 pkts/s</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dynamic Application Container -->
+    <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-6 2xl:max-w-[1720px] 4k:max-w-[2200px]">
+
+        <!-- ========================================================================= -->
+        <!-- PAGE 1: NOC DASHBOARD & CANDIDATE SUMMARY                                -->
+        <!-- ========================================================================= -->
+        <section id="page-dashboard" class="spa-page active space-y-6">
+            
+            <!-- Live NOC Status Alert Ribbon -->
+            <div class="human-card rounded-lg p-3 bg-gradient-to-r from-white via-sky-50/30 to-white flex flex-col md:flex-row md:items-center justify-between gap-3 border-l-4 border-l-sky-600">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 status-beacon shrink-0"></div>
+                    <div class="text-xs">
+                        <span class="font-bold text-slate-900 font-mono">STATUS: AVAILABLE FOR NOC & JUNIOR INFRASTRUCTURE ROLES</span>
+                        <span class="text-slate-500 hidden sm:inline"> — Open for Tier 1/2 operations, shift rotations & data center deployments.</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 font-mono text-3xs shrink-0">
+                    <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600">CCNA Labs Ready</span>
+                    <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600">GNS3 / EVE-NG</span>
+                    <button onclick="navigate('terminal')" class="px-2 py-0.5 rounded bg-sky-600 hover:bg-sky-700 text-white font-medium transition">
+                        Launch CLI →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Profile Summary Card with Detailed Telemetry -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                
+                <!-- Bio & Engineering Philosophy (8 cols) -->
+                <div class="lg:col-span-8 human-card rounded-lg p-5 sm:p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-4 border-b border-slate-100">
+                        <div>
+                            <div class="text-3xs font-mono uppercase tracking-wider text-sky-700 font-bold mb-1">CANDIDATE DOSSIER</div>
+                            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+                                Arpan Manna
+                            </h1>
+                            <p class="text-xs text-slate-600 font-medium mt-0.5">
+                                Network Engineer • Systems Administration • Packet Analysis
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            <span class="px-2 py-1 rounded bg-slate-100 font-mono text-3xs text-slate-700 border border-slate-200">Contai, West Bengal, India</span>
+                            <a href="mailto:x@arwk.in" class="px-2.5 py-1 rounded bg-sky-600 hover:bg-sky-700 text-white font-mono text-2xs transition flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                Contact
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 text-xs leading-relaxed text-slate-700">
+                        <p>
+                            Highly motivated and detail-oriented Network Engineer with hands-on lab experience in routing, switching, and systems administration. Proficient in designing and deploying enterprise network topologies using Cisco Packet Tracer and GNS3. Strong understanding of TCP/IP architecture, subnetting, dynamic routing (OSPF, EIGRP), and Layer 2 protocols (VLANs, STP). Eager to leverage rigorous troubleshooting skills and foundational knowledge of Windows and Linux administration to contribute effectively to a Network Operations Center (NOC) or IT infrastructure team.
+                        </p>
+                        <p class="text-slate-600 text-2xs">
+                            <strong class="text-slate-800">Recruiter Note:</strong> Every topology documented on this system has been constructed from bare-metal scratch in Cisco Packet Tracer and GNS3. Configurations emphasize RFC compliance, determinism, and zero unrouted loops.
+                        </p>
+                    </div>
+
+                    <!-- Quick Lab Metric Badges -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
+                        <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-center">
+                            <div class="text-xs font-mono font-bold text-slate-900">OSPF / EIGRP</div>
+                            <div class="text-3xs font-mono text-slate-500 uppercase">Dynamic Core</div>
+                        </div>
+                        <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-center">
+                            <div class="text-xs font-mono font-bold text-slate-900">Dual-eBGP</div>
+                            <div class="text-3xs font-mono text-slate-500 uppercase">Edge Redundancy</div>
+                        </div>
+                        <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-center">
+                            <div class="text-xs font-mono font-bold text-slate-900">RSTP + LACP</div>
+                            <div class="text-3xs font-mono text-slate-500 uppercase">Loop Prevention</div>
+                        </div>
+                        <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-center">
+                            <div class="text-xs font-mono font-bold text-slate-900">RHEL + AD DS</div>
+                            <div class="text-3xs font-mono text-slate-500 uppercase">Systems Admin</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Network Telemetry Simulator Widget (4 cols) -->
+                <div class="lg:col-span-4 human-card rounded-lg p-5 flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                            <span class="text-2xs font-mono font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live NOC Telemetry
+                            </span>
+                            <span class="text-3xs font-mono text-slate-500">UPDATED: REALTIME</span>
+                        </div>
+                        <div class="mt-3 space-y-2.5 font-mono text-2xs">
+                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
+                                <span class="text-slate-500">Default Gateway</span>
+                                <span class="text-slate-800 font-semibold">192.168.1.1 (HQ-GW)</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
+                                <span class="text-slate-500">Core Convergence</span>
+                                <span class="text-emerald-700 font-semibold">&lt; 1.2s (Sub-second)</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
+                                <span class="text-slate-500">eBGP Peers</span>
+                                <span class="text-slate-800 font-semibold">2 Peers ESTABLISHED</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
+                                <span class="text-slate-500">STP Root Bridge</span>
+                                <span class="text-slate-800 font-semibold">HQ-DSW-01 (Priority 4096)</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="text-slate-500">VLAN Segments</span>
+                                <span class="text-slate-800 font-semibold">HR (10), IT (20), FIN (30)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mini Live Canvas Ping Monitor -->
+                    <div class="p-3 bg-slate-900 rounded text-white font-mono text-3xs space-y-1">
+                        <div class="text-slate-400 flex justify-between">
+                            <span>RTT Latency (ICMP Echo)</span>
+                            <span class="text-emerald-400">0% Loss</span>
+                        </div>
+                        <div class="flex items-end gap-1 h-8 pt-1" id="latencyBars">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                        <div class="text-slate-500 text-3xs flex justify-between pt-1">
+                            <span>Min: 1ms</span>
+                            <span>Avg: 2.4ms</span>
+                            <span>Max: 6ms</span>
+                        </div>
+                    </div>
+
+                    <button onclick="navigate('topologies')" class="w-full py-2 rounded bg-slate-100 hover:bg-slate-200 text-slate-800 font-mono text-2xs font-semibold transition text-center border border-slate-200">
+                        Inspect Complete Architecture Topologies →
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Fast-Click Hub: Drill Into Sub-Pages -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <div onclick="navigate('topologies'); switchSubView('topo-routing')" class="human-card p-4 rounded-lg cursor-pointer hover:border-sky-400 transition group">
+                    <div class="text-3xs font-mono text-sky-700 font-bold uppercase mb-1">EXPLORE TOPOLOGY 01</div>
+                    <h3 class="text-xs font-bold text-slate-900 group-hover:text-sky-600 transition flex items-center justify-between">
+                        Enterprise Multi-Site Routing
+                        <span>→</span>
+                    </h3>
+                    <p class="text-2xs text-slate-600 mt-1">OSPF multi-area design, EIGRP redistribution, branch links & sub-second convergence.</p>
+                </div>
+
+                <div onclick="navigate('topologies'); switchSubView('topo-ebgp')" class="human-card p-4 rounded-lg cursor-pointer hover:border-sky-400 transition group">
+                    <div class="text-3xs font-mono text-indigo-700 font-bold uppercase mb-1">EXPLORE TOPOLOGY 02</div>
+                    <h3 class="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition flex items-center justify-between">
+                        Dual-Homed eBGP Edge
+                        <span>→</span>
+                    </h3>
+                    <p class="text-2xs text-slate-600 mt-1">Multi-homed ISP connectivity, route-map policy, AS-path prepending & failover.</p>
+                </div>
+
+                <div onclick="navigate('topologies'); switchSubView('topo-l2')" class="human-card p-4 rounded-lg cursor-pointer hover:border-sky-400 transition group">
+                    <div class="text-3xs font-mono text-emerald-700 font-bold uppercase mb-1">EXPLORE TOPOLOGY 03</div>
+                    <h3 class="text-xs font-bold text-slate-900 group-hover:text-emerald-600 transition flex items-center justify-between">
+                        Switching & Campus Hardening
+                        <span>→</span>
+                    </h3>
+                    <p class="text-2xs text-slate-600 mt-1">802.1Q trunks, RSTP root guard, PortFast, LACP etherchannel, sticky MAC security.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PAGE 2: LAB TOPOLOGIES & DETAILED BLUEPRINTS (WITH SUB-PAGES)             -->
+        <!-- ========================================================================= -->
+        <section id="page-topologies" class="spa-page space-y-6">
+            
+            <div class="human-card rounded-lg p-5">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-slate-200">
+                    <div>
+                        <div class="text-3xs font-mono uppercase tracking-wider text-sky-700 font-bold">LAB DOCUMENTATION & SCHEMATICS</div>
+                        <h2 class="text-base sm:text-lg font-bold text-slate-900">
+                            Enterprise Multi-Site Network Architecture Implementation
+                        </h2>
+                        <div class="text-2xs font-mono text-slate-500 mt-0.5">
+                            Built and verified in Cisco Packet Tracer & GNS3 environment
+                        </div>
+                    </div>
+
+                    <!-- Sub-Page Switcher Tabs -->
+                    <div class="flex items-center gap-1.5 p-1 rounded-md bg-slate-100 border border-slate-200 font-mono text-2xs overflow-x-auto">
+                        <button onclick="switchSubView('topo-routing')" id="btn-sub-routing" class="subtab-btn px-2.5 py-1 rounded bg-white text-slate-900 font-semibold shadow-xs">01 Core Routing</button>
+                        <button onclick="switchSubView('topo-ebgp')" id="btn-sub-ebgp" class="subtab-btn px-2.5 py-1 rounded text-slate-600 hover:text-slate-900">02 eBGP Edge</button>
+                        <button onclick="switchSubView('topo-l2')" id="btn-sub-l2" class="subtab-btn px-2.5 py-1 rounded text-slate-600 hover:text-slate-900">03 L2 Hardening</button>
+                    </div>
+                </div>
+
+                <!-- Sub-Page 1: Multi-Site OSPF & EIGRP Core -->
+                <div id="subview-topo-routing" class="subview active pt-5 space-y-5">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        <div class="lg:col-span-7 space-y-3">
+                            <h3 class="text-xs font-bold text-slate-900 font-mono flex items-center gap-2">
+                                <span class="px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 text-3xs font-bold">SUB-01</span>
+                                Scalable Core Routing: OSPF Multi-Area & EIGRP Integration
+                            </h3>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                Designed and simulated a scalable corporate network connecting a headquarters to multiple remote branch offices using OSPF and EIGRP routing protocols for optimized path selection and sub-second convergence.
+                            </p>
+                            <div class="space-y-2 text-2xs text-slate-600">
+                                <div class="p-3 rounded bg-slate-50 border border-slate-200">
+                                    <div class="font-bold text-slate-800 font-mono mb-1">Architecture Highlights:</div>
+                                    <ul class="list-disc pl-4 space-y-1">
+                                        <li>OSPF Area 0 (Backbone) established across HQ Distribution Routers with tuned hello/dead timers (1s/4s) for high-speed link-fault detection.</li>
+                                        <li>Remote branch networks connected over serial/Gigabit circuits leveraging EIGRP with Feasible Successor paths pre-calculated for zero-downtime cutover.</li>
+                                        <li>Mutual route redistribution configured with administrative distance metric weighting and route-maps to prevent two-way routing feedback loops.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Config Previewer -->
+                        <div class="lg:col-span-5 bg-slate-900 rounded-lg p-3 text-slate-200 font-mono text-3xs flex flex-col justify-between shadow-xs">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-700 text-slate-400">
+                                <span>HQ-R1-CORE.cfg [OSPF/EIGRP]</span>
+                                <span class="text-emerald-400">SYNTAX VERIFIED</span>
+                            </div>
+                            <pre class="overflow-x-auto py-2 text-slate-300 leading-normal">
+! --- OSPF Area 0 Backbone ---
+router ospf 1
+ router-id 1.1.1.1
+ log-adjacency-changes
+ network 10.0.0.0 0.0.0.255 area 0
+ network 192.168.1.0 0.0.0.255 area 0
+ auto-cost reference-bandwidth 10000
+!
+! --- EIGRP Branch Redundancy ---
+router eigrp 100
+ network 172.16.0.0 0.0.255.255
+ no auto-summary
+ metric weights 0 1 0 1 0 0</pre>
+                            <button onclick="runConsole('show ip route'); navigate('terminal')" class="mt-2 py-1 px-2 rounded bg-slate-800 hover:bg-slate-700 text-sky-400 text-3xs text-center border border-slate-700 transition">
+                                Test in Simulated Terminal →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-Page 2: Dual-Homed eBGP Edge -->
+                <div id="subview-topo-ebgp" class="subview pt-5 space-y-5">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        <div class="lg:col-span-7 space-y-3">
+                            <h3 class="text-xs font-bold text-slate-900 font-mono flex items-center gap-2">
+                                <span class="px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 text-3xs font-bold">SUB-02</span>
+                                Dual-Homed Enterprise Edge: Redundant external BGP (eBGP)
+                            </h3>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                Architected a dual-homed enterprise edge network utilizing external BGP (eBGP) for redundant ISP connectivity, manipulating route attributes to engineer precise inbound and outbound traffic flows.
+                            </p>
+                            <div class="space-y-2 text-2xs text-slate-600">
+                                <div class="p-3 rounded bg-slate-50 border border-slate-200">
+                                    <div class="font-bold text-slate-800 font-mono mb-1">Traffic Engineering Decisions:</div>
+                                    <ul class="list-disc pl-4 space-y-1">
+                                        <li>Primary uplink engineered to ISP-A (AS64512) with higher Local Preference (200) for deterministic primary outbound internet transit.</li>
+                                        <li>Backup path routed to ISP-B (AS64513) with standard Local Preference (100) and AS-Path Prepending (3x) on egress to ensure asymmetric inbound path suppression.</li>
+                                        <li>Edge NAT/PAT overload pools mapped directly to route interfaces to maintain continuous session translation during ISP failover tests.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Config Previewer -->
+                        <div class="lg:col-span-5 bg-slate-900 rounded-lg p-3 text-slate-200 font-mono text-3xs flex flex-col justify-between shadow-xs">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-700 text-slate-400">
+                                <span>EDGE-GW-BGP.cfg [PEERING]</span>
+                                <span class="text-emerald-400">MULTI-HOMED</span>
+                            </div>
+                            <pre class="overflow-x-auto py-2 text-slate-300 leading-normal">
+! --- Exterior BGP Peering ---
+router bgp 65001
+ bgp log-neighbor-changes
+ neighbor 203.0.113.1 remote-as 64512
+ neighbor 203.0.113.1 description PRIMARY-ISP-A
+ neighbor 203.0.113.1 route-map SET-LP-IN in
+ neighbor 203.0.113.5 remote-as 64513
+ neighbor 203.0.113.5 description BACKUP-ISP-B
+ neighbor 203.0.113.5 route-map PREPEND-OUT out
+!
+route-map SET-LP-IN permit 10
+ set local-preference 200</pre>
+                            <button onclick="runConsole('show ip bgp summary'); navigate('terminal')" class="mt-2 py-1 px-2 rounded bg-slate-800 hover:bg-slate-700 text-sky-400 text-3xs text-center border border-slate-700 transition">
+                                View BGP Neighbors in CLI →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-Page 3: Layer 2 Hardening, VLANs & RSTP -->
+                <div id="subview-topo-l2" class="subview pt-5 space-y-5">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        <div class="lg:col-span-7 space-y-3">
+                            <h3 class="text-xs font-bold text-slate-900 font-mono flex items-center gap-2">
+                                <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-3xs font-bold">SUB-03</span>
+                                Campus Switching: Inter-VLAN, RSTP Loop Mitigation & Port Hardening
+                            </h3>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                Implemented inter-VLAN routing using a Router-on-a-Stick topology to securely segment HR, IT, and Finance departments, enforcing inter-departmental traffic policies via Extended Access Control Lists (ACLs). Configured Layer 2 redundancy and loop prevention using Rapid Spanning Tree Protocol (RSTP) and aggregated switch links using EtherChannel (LACP) to increase backbone bandwidth. Deployed Port Address Translation (PAT) on edge routers and implemented Port Security on access switches.
+                            </p>
+                            <div class="space-y-2 text-2xs text-slate-600">
+                                <div class="p-3 rounded bg-slate-50 border border-slate-200">
+                                    <div class="font-bold text-slate-800 font-mono mb-1">Security & Link Integrity Controls:</div>
+                                    <ul class="list-disc pl-4 space-y-1">
+                                        <li><strong>Port Security (Sticky MAC):</strong> Max 1 MAC per access interface, immediate shutdown violation state against unauthorized rogue laptop patching.</li>
+                                        <li><strong>DHCP Snooping & DAI:</strong> Untrusted client ports inspected; ARP spoofing poisoning completely blocked across all user access ports.</li>
+                                        <li><strong>Spanning Tree:</strong> BPDU Guard enabled on all PortFast access access points to prevent unauthorized bridge insertion.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Config Previewer -->
+                        <div class="lg:col-span-5 bg-slate-900 rounded-lg p-3 text-slate-200 font-mono text-3xs flex flex-col justify-between shadow-xs">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-700 text-slate-400">
+                                <span>SW-ACCESS-01.cfg [HARDENED]</span>
+                                <span class="text-emerald-400">PORT SECURITY</span>
+                            </div>
+                            <pre class="overflow-x-auto py-2 text-slate-300 leading-normal">
+! --- Hardened Switchport Access ---
+interface FastEthernet0/1
+ description HR-USER-PORT
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown</pre>
+                            <button onclick="runConsole('show port-security'); navigate('terminal')" class="mt-2 py-1 px-2 rounded bg-slate-800 hover:bg-slate-700 text-sky-400 text-3xs text-center border border-slate-700 transition">
+                                Inspect Port Security in CLI →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PAGE 3: PROTOCOL MATRIX & SKILLS REPOSITORY                              -->
+        <!-- ========================================================================= -->
+        <section id="page-protocols" class="spa-page space-y-6">
+            
+            <div class="human-card rounded-lg p-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-200">
+                    <div>
+                        <div class="text-3xs font-mono uppercase tracking-wider text-sky-700 font-bold">STANDARDS & STACK EXPERTISE</div>
+                        <h2 class="text-base sm:text-lg font-bold text-slate-900">
+                            Protocol Matrix & Technical Skills
+                        </h2>
+                    </div>
+                    <span class="text-3xs font-mono text-slate-500">Categorized by Network Domain</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
+
+                    <!-- Card 1: Network Architecture & Protocols -->
+                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-mono text-xs font-bold text-slate-900">Network Architecture</h3>
+                            <span class="text-3xs font-mono text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded border border-sky-200">Core Stack</span>
+                        </div>
+                        <p class="text-2xs text-slate-600">Addressing foundation, subnet hierarchies, and network infrastructure baselines.</p>
+                        <div class="flex flex-wrap gap-1 pt-1">
+                            <span class="code-tag">TCP/IP</span>
+                            <span class="code-tag">OSI Model</span>
+                            <span class="code-tag">IPv4/IPv6 Subnetting</span>
+                            <span class="code-tag">VLSM</span>
+                            <span class="code-tag">CIDR</span>
+                            <span class="code-tag">IP Planning</span>
+                            <span class="code-tag">Topology Design</span>
+                            <span class="code-tag">DNS</span>
+                            <span class="code-tag">DHCP</span>
+                            <span class="code-tag">TFTP</span>
+                            <span class="code-tag">SNMP</span>
+                            <span class="code-tag">NTP</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Routing Technologies -->
+                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-mono text-xs font-bold text-slate-900">Routing Technologies</h3>
+                            <span class="text-3xs font-mono text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">Layer 3</span>
+                        </div>
+                        <p class="text-2xs text-slate-600">Deterministic path selection, distance vector and link-state routing.</p>
+                        <div class="flex flex-wrap gap-1 pt-1">
+                            <span class="code-tag">Static Routing</span>
+                            <span class="code-tag">Default Routing</span>
+                            <span class="code-tag">Router-on-a-Stick</span>
+                            <span class="code-tag">SVI</span>
+                            <span class="code-tag">OSPFv2</span>
+                            <span class="code-tag">OSPFv3</span>
+                            <span class="code-tag">EIGRP</span>
+                            <span class="code-tag">BGP</span>
+                            <span class="code-tag">Route Summarization</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Switching & Layer 2 -->
+                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-mono text-xs font-bold text-slate-900">Switching & Layer 2</h3>
+                            <span class="text-3xs font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Ethernet / LAN</span>
+                        </div>
+                        <p class="text-2xs text-slate-600">VLAN isolation, trunk negotiation, broadcast domain mitigation, and bonding.</p>
+                        <div class="flex flex-wrap gap-1 pt-1">
+                            <span class="code-tag">Cisco Catalyst Switches</span>
+                            <span class="code-tag">VLAN Segmentation</span>
+                            <span class="code-tag">802.1Q Trunking</span>
+                            <span class="code-tag">VTP</span>
+                            <span class="code-tag">STP / RSTP / PVST+</span>
+                            <span class="code-tag">PortFast</span>
+                            <span class="code-tag">BPDU Guard</span>
+                            <span class="code-tag">EtherChannel (LACP)</span>
+                            <span class="code-tag">PAgP</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Network Security -->
+                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-mono text-xs font-bold text-slate-900">Network Security</h3>
+                            <span class="text-3xs font-mono text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">Defensive</span>
+                        </div>
+                        <p class="text-2xs text-slate-600">Filtering rule definitions, edge translation, and access switch hardening.</p>
+                        <div class="flex flex-wrap gap-1 pt-1">
+                            <span class="code-tag">Standard ACLs</span>
+                            <span class="code-tag">Extended ACLs</span>
+                            <span class="code-tag">NAT / PAT</span>
+                            <span class="code-tag">Port Security (Sticky MAC)</span>
+                            <span class="code-tag">DHCP Snooping</span>
+                            <span class="code-tag">DAI (ARP Inspection)</span>
+                            <span class="code-tag">Layer 2 Hardening</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Diagnostic Tools & Simulators -->
+                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-mono text-xs font-bold text-slate-900">Diagnostic Tools</h3>
+                            <span class="text-3xs font-mono text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">Simulators</span>
+                        </div>
+                        <p class="text-2xs text-slate-600">Deep packet capture, emulation engines, and operational testing tools.</p>
+                        <div class="flex flex-wrap gap-1 pt-1">
+                            <span class="code-tag">Cisco Packet Tracer</span>
+                            <span class="code-tag">GNS3</span>
+                            <span class="code-tag">EVE-NG</span>
+                            <span class="code-tag">Wireshark</span>
+                            <span class="code-tag">Nmap</span>
+                            <span class="code-tag">PuTTY</span>
+                            <span class="code-tag">Ping & Traceroute</span>
+                            <span class="code-tag">Netstat</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 6: Systems Administration -->
+                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-mono text-xs font-bold text-slate-900">Systems Administration</h3>
+                            <span class="text-3xs font-mono text-slate-700 bg-slate-200 px-1.5 py-0.5 rounded border border-slate-300">OS & Host</span>
+                        </div>
+                        <p class="text-2xs text-slate-600">Enterprise directory infrastructure, storage mounts, and daemon security.</p>
+                        <div class="flex flex-wrap gap-1 pt-1">
+                            <span class="code-tag">Windows Server</span>
+                            <span class="code-tag">Active Directory (AD DS)</span>
+                            <span class="code-tag">GPO</span>
+                            <span class="code-tag">IIS Web Server</span>
+                            <span class="code-tag">NTFS Permissions</span>
+                            <span class="code-tag">Linux (RHEL)</span>
+                            <span class="code-tag">Bash Scripting</span>
+                            <span class="code-tag">LVM</span>
+                            <span class="code-tag">NFS / SAMBA</span>
+                            <span class="code-tag">Systemd</span>
+                            <span class="code-tag">UFW / Firewalld</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PAGE 4: INTERACTIVE CISCO IOS TERMINAL CONSOLE                            -->
+        <!-- ========================================================================= -->
+        <section id="page-terminal" class="spa-page space-y-6">
+            
+            <div class="human-card rounded-lg overflow-hidden border border-slate-300 bg-white shadow-sm">
+                
+                <!-- Terminal Header Bar -->
+                <div class="px-4 py-2.5 bg-slate-100 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-slate-300 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-slate-300 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-slate-300 inline-block"></span>
+                        </div>
+                        <span class="text-xs font-mono font-bold text-slate-700 ml-2">HQ-CORE-R1.lab (Cisco C7200 IOS 15.2M)</span>
+                    </div>
+                    <div class="text-3xs font-mono text-slate-500">
+                        Line: con0 (9600 8N1) • ESC to break
+                    </div>
+                </div>
+
+                <!-- Command Toolbar -->
+                <div class="px-4 py-2 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center gap-1.5 text-2xs font-mono">
+                    <span class="text-slate-500 text-3xs uppercase font-bold">Inspect:</span>
+                    <button onclick="runConsole('show ip route')" class="px-2 py-0.5 rounded bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-slate-300 transition">show ip route</button>
+                    <button onclick="runConsole('show vlan brief')" class="px-2 py-0.5 rounded bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-slate-300 transition">show vlan brief</button>
+                    <button onclick="runConsole('show ip bgp summary')" class="px-2 py-0.5 rounded bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-slate-300 transition">show ip bgp summary</button>
+                    <button onclick="runConsole('show port-security')" class="px-2 py-0.5 rounded bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-slate-300 transition">show port-security</button>
+                    <button onclick="runConsole('traceroute 172.16.50.1')" class="px-2 py-0.5 rounded bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-slate-300 transition">traceroute branch</button>
+                    <button onclick="runConsole('ping 10.0.10.1')" class="px-2 py-0.5 rounded bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-slate-300 transition">ping gateway</button>
+                    <button onclick="clearConsole()" class="px-2 py-0.5 rounded bg-slate-200/80 hover:bg-slate-300 text-slate-700 transition ml-auto">clear</button>
+                </div>
+
+                <!-- Terminal Scroll Screen Area -->
+                <div id="termScreen" class="p-4 bg-[#fbfbf9] font-mono text-2xs text-slate-800 space-y-1.5 min-h-[260px] max-h-[460px] overflow-y-auto leading-relaxed border-b border-slate-200 select-text">
+                    <div class="text-slate-500">Cisco IOS Software, 7200 Software (C7200-ADVENTERPRISEK9-M), Version 15.2(4)M11</div>
+                    <div class="text-slate-500">Connected to HQ-CORE-R1 lab console. Type <span class="text-sky-700 font-bold">'help'</span> or click pills above.</div>
+                    <div class="pt-1 text-slate-900 font-bold">HQ-CORE-R1# show ip route</div>
+                    <div class="text-slate-700 pl-2 whitespace-pre-wrap">Gateway of last resort is 203.0.113.1 to network 0.0.0.0
+B*   0.0.0.0/0 [20/0] via 203.0.113.1, 04:12:30 (eBGP Edge)
+O    10.0.10.0/24 [110/2] via 192.168.1.2, FastEthernet0/0 (VLAN 10 HR)
+O    10.0.20.0/24 [110/2] via 192.168.1.2, FastEthernet0/0 (VLAN 20 IT)
+O    10.0.30.0/24 [110/2] via 192.168.1.2, FastEthernet0/0 (VLAN 30 Finance)
+D    172.16.50.0/24 [90/307200] via 10.254.0.2, GigabitEthernet0/1 (Branch-01 EIGRP)
+C    192.168.1.0/24 is directly connected, GigabitEthernet0/0</div>
+                </div>
+
+                <!-- Input Form Prompt -->
+                <form id="termForm" onsubmit="handleFormSubmit(event)" class="flex items-center px-4 py-2.5 bg-white">
+                    <span class="font-mono text-2xs text-sky-700 font-bold mr-2 shrink-0">HQ-CORE-R1#</span>
+                    <input id="termInput" type="text" autocomplete="off" spellcheck="false" placeholder="Type Cisco command (e.g., show ip route, show ip bgp, ping 10.0.10.1, help)" class="w-full bg-transparent font-mono text-2xs text-slate-900 outline-none placeholder:text-slate-400">
+                    <button type="submit" class="text-3xs font-mono text-slate-700 hover:text-slate-900 px-2.5 py-1 rounded border border-slate-300 bg-slate-50 shrink-0 font-medium ml-2">Execute</button>
+                </form>
+
+            </div>
+
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PAGE 5: EDUCATION & CREDENTIALS RECORD                                    -->
+        <!-- ========================================================================= -->
+        <section id="page-credentials" class="spa-page space-y-6">
+            
+            <div class="human-card rounded-lg p-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-200">
+                    <div>
+                        <div class="text-3xs font-mono uppercase tracking-wider text-sky-700 font-bold">ACADEMIC & DIPLOMA VERIFICATION</div>
+                        <h2 class="text-base sm:text-lg font-bold text-slate-900">
+                            Educational History & Credentials
+                        </h2>
+                    </div>
+                    <span class="text-3xs font-mono text-slate-500">Verified Chronology</span>
+                </div>
+
+                <div class="space-y-3 pt-4">
+
+                    <!-- Degree 1: Hardware & Networking -->
+                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 border-l-4 border-l-sky-600 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <span class="text-3xs font-mono font-bold uppercase tracking-wide text-sky-700">TECHNICAL SPECIALIZATION DIPLOMA</span>
+                            <h3 class="text-xs font-bold text-slate-900">
+                                Advance Diploma in Hardware & Networking Engineering
+                            </h3>
+                            <div class="text-2xs text-slate-600 font-mono">The George Telegraph Training Institute</div>
+                            <p class="text-2xs text-slate-600 pt-0.5">
+                                Rigorous training in routing protocols (OSPF, EIGRP, BGP), enterprise switching architectures, Cisco IOS operations, Windows Server (AD DS) and Red Hat Enterprise Linux systems.
+                            </p>
+                        </div>
+                        <div class="sm:text-right font-mono shrink-0">
+                            <span class="inline-block px-2.5 py-1 rounded bg-sky-100 text-sky-800 border border-sky-300 text-3xs font-bold">
+                                Expected 2026
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Degree 2: GIS & Remote Sensing -->
+                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <span class="text-3xs font-mono font-bold uppercase tracking-wide text-slate-500">POSTGRADUATE DIPLOMA</span>
+                            <h3 class="text-xs font-bold text-slate-900">
+                                Advance Diploma in GIS & Remote Sensing
+                            </h3>
+                            <div class="text-2xs text-slate-600 font-mono">Vidyasagar University</div>
+                            <p class="text-2xs text-slate-600 pt-0.5">
+                                Spatial analysis, geospatial database querying, telemetry datasets, and remote sensing architectures.
+                            </p>
+                        </div>
+                        <div class="sm:text-right font-mono shrink-0">
+                            <span class="inline-block px-2.5 py-1 rounded bg-white text-slate-700 border border-slate-300 text-3xs font-semibold">
+                                2024 • 74.20%
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Degree 3: M.Sc. Agronomy -->
+                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <span class="text-3xs font-mono font-bold uppercase tracking-wide text-slate-500">MASTER OF SCIENCE</span>
+                            <h3 class="text-xs font-bold text-slate-900">
+                                M.Sc. in Agronomy
+                            </h3>
+                            <div class="text-2xs text-slate-600 font-mono">Vidyasagar University</div>
+                            <p class="text-2xs text-slate-600 pt-0.5">
+                                Analytical research, empirical data collection, structured methodology, and statistical variance testing.
+                            </p>
+                        </div>
+                        <div class="sm:text-right font-mono shrink-0">
+                            <span class="inline-block px-2.5 py-1 rounded bg-white text-slate-700 border border-slate-300 text-3xs font-semibold">
+                                2023 • 8.24 CGPA
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Degree 4: B.Sc. Agriculture -->
+                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <span class="text-3xs font-mono font-bold uppercase tracking-wide text-slate-500">BACHELOR OF SCIENCE</span>
+                            <h3 class="text-xs font-bold text-slate-900">
+                                B.Sc. in Agriculture
+                            </h3>
+                            <div class="text-2xs text-slate-600 font-mono">CSJMU University</div>
+                            <p class="text-2xs text-slate-600 pt-0.5">
+                                Core scientific curriculum, laboratory protocols, and structured documentation methods.
+                            </p>
+                        </div>
+                        <div class="sm:text-right font-mono shrink-0">
+                            <span class="inline-block px-2.5 py-1 rounded bg-white text-slate-700 border border-slate-300 text-3xs font-semibold">
+                                2021 • 7.39 CGPA
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PAGE 6: DISPATCH / RECRUITER CONTACT CONSOLE                              -->
+        <!-- ========================================================================= -->
+        <section id="page-dispatch" class="spa-page space-y-6">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                
+                <!-- Direct Dispatch Information (5 cols) -->
+                <div class="lg:col-span-5 human-card rounded-lg p-5 sm:p-6 space-y-4">
+                    <div>
+                        <div class="text-3xs font-mono uppercase tracking-wider text-sky-700 font-bold mb-1">DIRECT CONTACT ROUTING</div>
+                        <h2 class="text-base sm:text-lg font-bold text-slate-900">
+                            Initiate NOC Recruitment Link
+                        </h2>
+                        <p class="text-xs text-slate-600 mt-1">
+                            Feel free to contact me directly regarding interviews, technical screenings, or hands-on lab walk-throughs.
+                        </p>
+                    </div>
+
+                    <div class="space-y-3 pt-2 font-mono text-2xs">
+                        <div class="p-3 rounded bg-slate-50 border border-slate-200 space-y-1">
+                            <div class="text-3xs text-slate-500 uppercase">Primary Inbound Mail</div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-slate-900">x@arwk.in</span>
+                                <button onclick="copyMail(this)" class="px-2 py-0.5 rounded bg-white border border-slate-300 text-3xs hover:bg-slate-100 transition">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded bg-slate-50 border border-slate-200 space-y-1">
+                            <div class="text-3xs text-slate-500 uppercase">Current Station</div>
+                            <div class="text-slate-800 font-semibold">Contai, West Bengal, India</div>
+                            <div class="text-3xs text-slate-500">Open to Kolkata, Bangalore, Hyderabad & National Relocation</div>
+                        </div>
+
+                        <div class="p-3 rounded bg-slate-50 border border-slate-200 space-y-1">
+                            <div class="text-3xs text-slate-500 uppercase">Availability</div>
+                            <div class="text-emerald-700 font-semibold flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Immediate / Short Notice
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <a href="mailto:x@arwk.in?subject=NOC%20Engineer%20Inquiry%20-%20Arpan%20Manna" class="w-full py-2 px-3 rounded bg-sky-600 hover:bg-sky-700 text-white font-mono text-xs font-semibold transition flex items-center justify-center gap-2 shadow-xs">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            <span>Open Mail Client</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recruiter Message Sandbox (7 cols) -->
+                <div class="lg:col-span-7 human-card rounded-lg p-5 sm:p-6 space-y-4">
+                    <div>
+                        <div class="text-3xs font-mono uppercase tracking-wider text-slate-500 font-bold mb-1">TRANSMISSION SANDBOX</div>
+                        <h3 class="text-sm font-bold text-slate-900">
+                            Send Direct Recruiter Ping
+                        </h3>
+                        <p class="text-2xs text-slate-500">
+                            Generates a pre-formatted payload directly addressed to Arpan's engineering mailbox.
+                        </p>
+                    </div>
+
+                    <form onsubmit="handleRecruiterForm(event)" class="space-y-3 font-mono text-2xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="space-y-1">
+                                <label class="text-3xs text-slate-600 uppercase font-bold" for="recName">Your Name / Organization</label>
+                                <input id="recName" required type="text" placeholder="e.g. Cisco Systems / Cloudflare" class="w-full px-3 py-1.5 rounded border border-slate-300 bg-slate-50 focus:bg-white focus:border-sky-500 outline-none text-slate-900">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-3xs text-slate-600 uppercase font-bold" for="recRole">Role / Opportunity</label>
+                                <input id="recRole" required type="text" placeholder="e.g. Junior Network Operations Engineer" class="w-full px-3 py-1.5 rounded border border-slate-300 bg-slate-50 focus:bg-white focus:border-sky-500 outline-none text-slate-900">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-3xs text-slate-600 uppercase font-bold" for="recMsg">Message / Screening Inquiries</label>
+                            <textarea id="recMsg" rows="4" required placeholder="Hi Arpan, we saw your enterprise multi-site OSPF/BGP lab architecture and want to connect..." class="w-full px-3 py-2 rounded border border-slate-300 bg-slate-50 focus:bg-white focus:border-sky-500 outline-none text-slate-900 resize-none"></textarea>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-3xs text-slate-500">Direct mail protocol (RFC 5322)</span>
+                            <button type="submit" class="px-4 py-2 rounded bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs transition flex items-center gap-1.5">
+                                <span>Transmit Message</span>
+                                <span>→</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Global Application Footer -->
+    <footer class="relative z-10 glass-panel border-t border-slate-200/90 py-5 mt-auto">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 2xl:max-w-[1720px] 4k:max-w-[2200px] flex flex-col sm:flex-row items-center justify-between gap-3 text-3xs font-mono text-slate-500">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-700">ARPAN MANNA</span>
+                <span>•</span>
+                <span>CCNA Lab Topologies & Infrastructure Operations</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="navigate('dashboard')" class="hover:text-slate-900 transition">Dashboard</button>
+                <span>•</span>
+                <button onclick="navigate('topologies')" class="hover:text-slate-900 transition">Topologies</button>
+                <span>•</span>
+                <button onclick="navigate('terminal')" class="hover:text-slate-900 transition">CLI Simulator</button>
+                <span>•</span>
+                <a href="mailto:x@arwk.in" class="text-sky-700 hover:underline">Direct Mail</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================================================= -->
+    <!-- JAVASCRIPT: SPA CLIENT ROUTER, SIMULATOR ENGINE, CANVAS PACKET MESH      -->
+    <!-- ========================================================================= -->
+    <script>
+        // -------------------------------------------------------------
+        // 1. Client-Side SPA Routing Engine (Simulating Node.js / Multi-page app)
+        // -------------------------------------------------------------
+        const validRoutes = ['dashboard', 'topologies', 'protocols', 'terminal', 'credentials', 'dispatch'];
+
+        function navigate(pageId, pushState = true) {
+            if (!validRoutes.includes(pageId)) pageId = 'dashboard';
+
+            // Hide all pages, reveal selected page
+            document.querySelectorAll('.spa-page').forEach(page => {
+                page.classList.remove('active');
+            });
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            // Update Nav Pill styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const route = btn.getAttribute('data-route');
+                if (route === pageId) {
+                    btn.classList.add('bg-slate-900', 'text-white', 'shadow-xs');
+                    btn.classList.remove('text-slate-600', 'hover:bg-slate-100/80');
+                    const dot = btn.querySelector('span');
+                    if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400';
+                } else {
+                    btn.classList.remove('bg-slate-900', 'text-white', 'shadow-xs');
+                    btn.classList.add('text-slate-600', 'hover:bg-slate-100/80');
+                    const dot = btn.querySelector('span');
+                    if (dot) dot.className = 'w-1 h-1 rounded-full bg-slate-400';
+                }
+            });
+
+            // Update Breadcrumb trail text
+            const bcSub = document.getElementById('bcSub');
+            if (bcSub) bcSub.textContent = pageId;
+
+            // Scroll gently to top of main view
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Update browser history hash
+            if (pushState) {
+                try {
+                    history.pushState({ page: pageId }, '', `#/${pageId}`);
+                } catch (e) {
+                    // Fallback in locked sandbox
+                    window.location.hash = `#/${pageId}`;
+                }
+            }
+        }
+
+        // Handle Popstate (Browser Back/Forward buttons)
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.page) {
+                navigate(e.state.page, false);
+            } else {
+                initRouteFromHash();
+            }
+        });
+
+        function initRouteFromHash() {
+            const rawHash = window.location.hash.replace('#/', '').replace('#', '');
+            if (validRoutes.includes(rawHash)) {
+                navigate(rawHash, false);
+            } else {
+                navigate('dashboard', false);
+            }
+        }
+
+        // Sub-page switcher for Lab Topologies
+        function switchSubView(subId) {
+            document.querySelectorAll('.subview').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.subtab-btn').forEach(b => {
+                b.className = 'subtab-btn px-2.5 py-1 rounded text-slate-600 hover:text-slate-900';
+            });
+
+            if (subId === 'topo-routing') {
+                document.getElementById('subview-topo-routing').classList.add('active');
+                document.getElementById('btn-sub-routing').className = 'subtab-btn px-2.5 py-1 rounded bg-white text-slate-900 font-semibold shadow-xs';
+            } else if (subId === 'topo-ebgp') {
+                document.getElementById('subview-topo-ebgp').classList.add('active');
+                document.getElementById('btn-sub-ebgp').className = 'subtab-btn px-2.5 py-1 rounded bg-white text-slate-900 font-semibold shadow-xs';
+            } else if (subId === 'topo-l2') {
+                document.getElementById('subview-topo-l2').classList.add('active');
+                document.getElementById('btn-sub-l2').className = 'subtab-btn px-2.5 py-1 rounded bg-white text-slate-900 font-semibold shadow-xs';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
+        // -------------------------------------------------------------
+        // 2. Clipboard & Recruiter Form Handling
+        // -------------------------------------------------------------
+        function copyMail(btn) {
+            const temp = document.createElement('input');
+            temp.value = 'x@arwk.in';
+            document.body.appendChild(temp);
+            temp.select();
+            try {
+                document.execCommand('copy');
+                const orig = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = orig; }, 1800);
+            } catch (err) {
+                window.location.href = 'mailto:x@arwk.in';
+            }
+            document.body.removeChild(temp);
+        }
+
+        function handleRecruiterForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('recName').value;
+            const role = document.getElementById('recRole').value;
+            const msg = document.getElementById('recMsg').value;
+            const subject = encodeURIComponent(`NOC Inquiry: ${role} - ${name}`);
+            const body = encodeURIComponent(`Sender: ${name}\nRole Opportunity: ${role}\n\nMessage:\n${msg}`);
+            window.location.href = `mailto:x@arwk.in?subject=${subject}&body=${body}`;
+        }
+
+        // -------------------------------------------------------------
+        // 3. Interactive Cisco IOS Diagnostic Console Simulation
+        // -------------------------------------------------------------
+        const cliDatabase = {
+            'help': `Available Cisco IOS Diagnostic Commands:
+  show ip route             - Display complete routing table and next-hops
+  show vlan brief           - List configured VLANs and assigned trunk/access ports
+  show ip bgp summary       - Display exterior BGP AS65001 neighbor peering state
+  show port-security        - Inspect sticky MAC security violations
+  show etherchannel summary - Review bonded LACP Port-Channels
+  show interfaces trunk     - Inspect 802.1Q encapsulation state
+  traceroute 172.16.50.1    - Trace multihop packet path to Branch-01
+  ping 10.0.10.1            - ICMP Echo test to HR department VLAN gateway
+  ping 203.0.113.1          - Ping primary ISP-A default gateway
+  clear                     - Wipe the diagnostic terminal screen`,
+            
+            'show ip route': `Gateway of last resort is 203.0.113.1 to network 0.0.0.0
+B*   0.0.0.0/0 [20/0] via 203.0.113.1, 04:12:30 (eBGP Edge)
+O    10.0.10.0/24 [110/2] via 192.168.1.2, FastEthernet0/0 (VLAN 10 HR)
+O    10.0.20.0/24 [110/2] via 192.168.1.2, FastEthernet0/0 (VLAN 20 IT)
+O    10.0.30.0/24 [110/2] via 192.168.1.2, FastEthernet0/0 (VLAN 30 Finance)
+D    172.16.50.0/24 [90/307200] via 10.254.0.2, GigabitEthernet0/1 (Branch-01 EIGRP)
+C    192.168.1.0/24 is directly connected, GigabitEthernet0/0`,
+
+            'show vlan brief': `VLAN  Name                             Status    Ports
+----  -------------------------------- --------- -------------------------------
+1     default                          active    Fa0/13-24
+10    HR_DEPARTMENT                    active    Fa0/1, Fa0/2, Fa0/3
+20    IT_ADMINISTRATION                active    Fa0/4, Fa0/5, Fa0/6
+30    FINANCE_SECURE                   active    Fa0/7, Fa0/8
+99    MANAGEMENT_NATIVE                active    Gig0/1 (Trunk 802.1Q)`,
+
+            'show ip bgp summary': `BGP router identifier 198.51.100.1, local AS number 65001
+BGP table version is 4, main routing table version 4
+
+Neighbor        V    AS    MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+203.0.113.1     4 64512       1280    1282        4    0    0 04:12:30        1 (ESTAB)
+203.0.113.5     4 64513       1279    1281        4    0    0 04:12:28        1 (ESTAB)`,
+
+            'show port-security': `Secure Port  MaxSecureAddr  CurrentAddr  SecurityViolation  Security Action
+-----------  -------------  -----------  -----------------  ---------------
+Fa0/1        1              1            0                  Shutdown
+Fa0/4        2              2            0                  Restrict (Sticky)
+Fa0/7        1              1            0                  Shutdown`,
+
+            'show etherchannel summary': `Group  Port-channel  Protocol    Ports
+------+-------------+-----------+-----------------------------------------------
+1      Po1(SU)       LACP        Fa0/11(P)  Fa0/12(P)
+2      Po2(SU)       LACP        Fa0/23(P)  Fa0/24(P)`,
+
+            'show interfaces trunk': `Port        Mode         Encapsulation  Status        Native vlan
+Gi0/1       on           802.1q         trunking      99
+
+Port        Vlans allowed on trunk
+Gi0/1       10,20,30,99`,
+
+            'traceroute 172.16.50.1': `Tracing the route to 172.16.50.1 (Branch-01 Core)
+  1 10.254.0.2 1 msec 2 msec 1 msec
+  2 172.16.1.1 2 msec 2 msec 2 msec
+  3 172.16.50.1 3 msec 3 msec 4 msec
+Trace complete.`,
+
+            'ping 10.0.10.1': `Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.0.10.1 (HR Gateway), timeout 2s:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/2/3 ms`,
+
+            'ping 203.0.113.1': `Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 203.0.113.1 (ISP-A Uplink), timeout 2s:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 4/6/8 ms`
+        };
+
+        function runConsole(cmdText) {
+            const screen = document.getElementById('termScreen');
+            const clean = cmdText.trim().toLowerCase();
+
+            const cmdDiv = document.createElement('div');
+            cmdDiv.className = 'pt-1.5 text-slate-900 font-bold';
+            cmdDiv.textContent = `HQ-CORE-R1# ${cmdText}`;
+            screen.appendChild(cmdDiv);
+
+            const outDiv = document.createElement('div');
+            outDiv.className = 'text-slate-700 pl-2 whitespace-pre-wrap';
+
+            if (cliDatabase[clean]) {
+                outDiv.textContent = cliDatabase[clean];
+            } else if (clean.startsWith('ping')) {
+                outDiv.textContent = `Type escape sequence to abort.\nSending 5, 100-byte ICMP Echos to target, timeout 2s:\n!!!!!\nSuccess rate is 100 percent (5/5), round-trip min/avg/max = 2/3/5 ms`;
+            } else {
+                outDiv.textContent = `% Unknown command or syntax error: "${cmdText}". Type 'help' for valid lab commands.`;
+            }
+
+            screen.appendChild(outDiv);
+            screen.scrollTop = screen.scrollHeight;
+        }
+
+        function clearConsole() {
+            const screen = document.getElementById('termScreen');
+            screen.innerHTML = `<div class="text-slate-500">Screen cleared. Type 'help' or click command buttons.</div>`;
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('termInput');
+            const cmd = input.value.trim();
+            if (!cmd) return;
+            if (cmd.toLowerCase() === 'clear') {
+                clearConsole();
+            } else {
+                runConsole(cmd);
+            }
+            input.value = '';
+        }
+
+        // -------------------------------------------------------------
+        // 4. Mini Telemetry Ping Graph Animator
+        // -------------------------------------------------------------
+        function initPingBars() {
+            const container = document.getElementById('latencyBars');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 0; i < 20; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'w-1 bg-sky-500/80 rounded-t transition-all duration-300';
+                bar.style.height = `${Math.floor(Math.random() * 20) + 6}px`;
+                container.appendChild(bar);
+            }
+            setInterval(() => {
+                const bars = container.children;
+                for (let i = 0; i < bars.length; i++) {
+                    const h = Math.floor(Math.random() * 22) + 4;
+                    bars[i].style.height = `${h}px`;
+                    if (h > 18) {
+                        bars[i].className = 'w-1 bg-amber-400 rounded-t transition-all duration-300';
+                    } else {
+                        bars[i].className = 'w-1 bg-sky-400/80 rounded-t transition-all duration-300';
+                    }
+                }
+            }, 1400);
+        }
+
+        // -------------------------------------------------------------
+        // 5. HTML5 Canvas Light Network Animation (Fluid mesh & packets)
+        // -------------------------------------------------------------
+        (function initFluidNetworkCanvas() {
+            const canvas = document.getElementById('network-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            let width, height;
+            let mouse = { x: -9999, y: -9999, radius: 140 };
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+
+            window.addEventListener('mouseleave', () => {
+                mouse.x = -9999;
+                mouse.y = -9999;
+            });
+
+            // Adjust node count fluidly for mobile vs 4k
+            const nodeCount = Math.max(22, Math.min(65, Math.floor((width * height) / 28000)));
+            const nodes = [];
+            const packets = [];
+
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.45,
+                    vy: (Math.random() - 0.5) * 0.45,
+                    baseRadius: Math.random() * 1.5 + 1.2,
+                    radius: 2,
+                    color: Math.random() > 0.3 ? '#64748b' : '#0284c7'
+                });
+            }
+
+            // Spawn dynamic data packet transmissions
+            setInterval(() => {
+                if (packets.length < 8 && nodes.length > 3) {
+                    const fromIdx = Math.floor(Math.random() * nodes.length);
+                    let toIdx = Math.floor(Math.random() * nodes.length);
+                    if (fromIdx !== toIdx) {
+                        const dist = Math.hypot(nodes[fromIdx].x - nodes[toIdx].x, nodes[fromIdx].y - nodes[toIdx].y);
+                        if (dist < 220) {
+                            packets.push({
+                                from: nodes[fromIdx],
+                                to: nodes[toIdx],
+                                progress: 0,
+                                speed: 0.009 + Math.random() * 0.007,
+                                color: Math.random() > 0.5 ? '#0284c7' : '#059669'
+                            });
+                        }
+                    }
+                }
+            }, 600);
+
+            let frame = 0;
+            function animate() {
+                frame++;
+                ctx.clearRect(0, 0, width, height);
+
+                // Update & draw nodes
+                for (let i = 0; i < nodes.length; i++) {
+                    const n = nodes[i];
+                    n.x += n.vx;
+                    n.y += n.vy;
+
+                    // Bounce walls
+                    if (n.x < 10 || n.x > width - 10) n.vx *= -1;
+                    if (n.y < 10 || n.y > height - 10) n.vy *= -1;
+
+                    // Mouse interaction repulsion/attraction
+                    const dMouse = Math.hypot(mouse.x - n.x, mouse.y - n.y);
+                    if (dMouse < mouse.radius) {
+                        const angle = Math.atan2(n.y - mouse.y, n.x - mouse.x);
+                        n.x += Math.cos(angle) * 0.8;
+                        n.y += Math.sin(angle) * 0.8;
+                        n.radius = n.baseRadius * 1.6;
+                    } else {
+                        n.radius = n.baseRadius;
+                    }
+
+                    // Draw Node
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = n.color;
+                    ctx.fill();
+
+                    // Connect edges
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const n2 = nodes[j];
+                        const dist = Math.hypot(n.x - n2.x, n.y - n2.y);
+                        const maxDist = width > 1600 ? 190 : 145;
+
+                        if (dist < maxDist) {
+                            const alpha = (1 - dist / maxDist) * 0.32;
+                            ctx.beginPath();
+                            ctx.moveTo(n.x, n.y);
+                            ctx.lineTo(n2.x, n2.y);
+                            ctx.strokeStyle = `rgba(148, 163, 184, ${alpha})`;
+                            ctx.lineWidth = 0.85;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Render moving network packets
+                for (let k = packets.length - 1; k >= 0; k--) {
+                    const p = packets[k];
+                    p.progress += p.speed;
+
+                    if (p.progress >= 1) {
+                        packets.splice(k, 1);
+                        continue;
+                    }
+
+                    const px = p.from.x + (p.to.x - p.from.x) * p.progress;
+                    const py = p.from.y + (p.to.y - p.from.y) * p.progress;
+
+                    // Packet dot
+                    ctx.beginPath();
+                    ctx.arc(px, py, 2.4, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+
+                    // Faint trailing glow
+                    ctx.beginPath();
+                    ctx.arc(px, py, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(2, 132, 199, 0.15)';
+                    ctx.fill();
+                }
+
+                // Live packet stat counter update every 60 frames
+                if (frame % 60 === 0) {
+                    const statEl = document.getElementById('canvasPacketStats');
+                    if (statEl) {
+                        statEl.textContent = `Rx/Tx: ${120 + Math.floor(Math.random() * 45)} pkts/s`;
+                    }
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        })();
+
+        // -------------------------------------------------------------
+        // 6. Application Startup Initializer
+        // -------------------------------------------------------------
+        window.addEventListener('DOMContentLoaded', () => {
+            initRouteFromHash();
+            initPingBars();
+        });
+    </script>
+</body>
+</html>
