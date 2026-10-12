@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arpan Manna | Network Engineer Portfolio (arwk.in)</title>
+  
+  <!-- Fonts & Tailwind CSS CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['Fira Code', 'monospace']
+          },
+          colors: {
+            net: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+              900: '#164e63',
+              dark: '#090d16',
+              card: '#0f172a',
+              cardBorder: '#1e293b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .grid-bg {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(14, 165, 233, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(14, 165, 233, 0.05) 1px, transparent 1px);
+    }
+    .glow-cyan {
+      box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #0b1120;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    .pulse-packet {
+      animation: pulseAnim 3s infinite ease-in-out;
+    }
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 0.3; transform: scale(0.98); }
+      50% { opacity: 0.8; transform: scale(1.02); }
+    }
+  </style>
+</head>
+
+<body class="bg-net-dark text-slate-200 font-sans selection:bg-net-500 selection:text-white custom-scrollbar min-h-screen relative overflow-x-hidden">
+
+  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-net-dark/80 border-b border-net-cardBorder">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#hero" class="flex items-center gap-2 group">
+        <span class="h-3 w-3 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-mono font-semibold tracking-wider text-slate-100 group-hover:text-net-400 transition-colors">
+          arwk<span class="text-net-400">.in</span>
+        </span>
+        <span class="hidden sm:inline-block text-xs font-mono px-2 py-0.5 rounded bg-net-900/50 text-net-400 border border-net-600/30">
+          NODE-ID: ARPAN
+        </span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+        <a href="#about" class="hover:text-net-400 transition-colors">About</a>
+        <a href="#skills" class="hover:text-net-400 transition-colors">Skills</a>
+        <a href="#projects" class="hover:text-net-400 transition-colors">Architecture</a>
+        <a href="#education" class="hover:text-net-400 transition-colors">Education</a>
+        <a href="#cli" class="hover:text-net-400 transition-colors">Terminal</a>
+        <a href="#contact" class="px-4 py-2 rounded-lg bg-net-500/10 hover:bg-net-500/20 text-net-400 border border-net-500/30 transition-all text-xs font-mono">
+          Connect / Contact
+        </a>
+      </nav>
+
+      <!-- Mobile Menu Button -->
+      <button id="menu-btn" aria-label="Toggle menu" class="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
+        <i class="fa-solid fa-bars-staggered text-lg"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div id="mobile-menu" class="hidden md:hidden border-b border-net-cardBorder bg-net-dark/95 backdrop-blur-xl px-4 py-4 space-y-3 font-mono text-sm">
+      <a href="#about" class="block py-2 text-slate-300 hover:text-net-400 mobile-nav-link"># 01. About</a>
+      <a href="#skills" class="block py-2 text-slate-300 hover:text-net-400 mobile-nav-link"># 02. Skills</a>
+      <a href="#projects" class="block py-2 text-slate-300 hover:text-net-400 mobile-nav-link"># 03. Architecture</a>
+      <a href="#education" class="block py-2 text-slate-300 hover:text-net-400 mobile-nav-link"># 04. Education</a>
+      <a href="#cli" class="block py-2 text-slate-300 hover:text-net-400 mobile-nav-link"># 05. Terminal</a>
+      <a href="#contact" class="block py-2 text-net-400 font-semibold mobile-nav-link"># 06. Contact</a>
+    </div>
+  </header>
+
+  <main class="grid-bg pt-20">
+    <section id="hero" class="min-h-[88vh] flex items-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center w-full">
+        
+        <!-- Left Column -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-net-500/30 text-xs font-mono text-net-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>STATUS: READY FOR NOC / INFRASTRUCTURE</span>
+          </div>
+
+          <div class="space-y-2">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white">
+              Arpan Manna
+            </h1>
+            <p class="text-xl sm:text-2xl font-mono text-net-400 font-medium">
+              Network Engineer <span class="text-slate-500">| L2/L3 Routing & Switching</span>
+            </p>
+          </div>
+
+          <p class="text-slate-400 leading-relaxed max-w-xl text-base sm:text-lg">
+            Specializing in designing, simulating, and hardening enterprise networks using Cisco Packet Tracer and GNS3. Focused on sub-second convergence, inter-VLAN segmentation, dynamic routing protocols, and systems administration.
+          </p>
+
+          <!-- Contact Snippets -->
+          <div class="flex flex-wrap items-center gap-4 text-xs font-mono pt-2">
+            <div class="flex items-center gap-2 bg-slate-900/80 px-3.5 py-2 rounded-lg border border-slate-800 text-slate-300">
+              <i class="fa-solid fa-envelope text-net-400"></i>
+              <span>x@arwk.in</span>
+              <button onclick="copyEmail(this)" title="Copy email" class="ml-1 text-slate-400 hover:text-net-400 transition">
+                <i class="fa-regular fa-copy"></i>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-900/80 px-3.5 py-2 rounded-lg border border-slate-800 text-slate-300">
+              <i class="fa-solid fa-location-dot text-rose-400"></i>
+              <span>Contai, West Bengal, India</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-900/80 px-3.5 py-2 rounded-lg border border-slate-800 text-slate-300">
+              <i class="fa-solid fa-globe text-cyan-400"></i>
+              <span>arwk.in</span>
+            </div>
+          </div>
+
+          <!-- CTA Buttons -->
+          <div class="flex flex-wrap gap-4 pt-3">
+            <a href="#projects" class="px-6 py-3 rounded-xl bg-net-500 hover:bg-net-400 text-slate-950 font-semibold text-sm transition-all shadow-lg shadow-net-500/20 flex items-center gap-2">
+              <i class="fa-solid fa-network-wired"></i> View Lab Implementations
+            </a>
+            <a href="#cli" class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm transition-all flex items-center gap-2">
+              <i class="fa-solid fa-terminal text-net-400"></i> Test Live CLI
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Column: Interactive Ping & Status Card -->
+        <div class="lg:col-span-5">
+          <div class="bg-net-card rounded-2xl border border-net-cardBorder p-5 sm:p-6 shadow-2xl relative glow-cyan">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
+                <span class="text-xs font-mono text-slate-400 ml-2">core-gw-contai#</span>
+              </div>
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                UPTIME: 99.98%
+              </span>
+            </div>
+
+            <!-- Mini Spec Grid -->
+            <div class="grid grid-cols-2 gap-3 text-xs font-mono mb-4">
+              <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                <p class="text-slate-500 text-[10px]">ROUTING ENGINES</p>
+                <p class="text-slate-200 font-semibold mt-0.5">OSPFv2 / OSPFv3 / BGP</p>
+              </div>
+              <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                <p class="text-slate-500 text-[10px]">LAYER 2 STACK</p>
+                <p class="text-slate-200 font-semibold mt-0.5">802.1Q / RSTP / LACP</p>
+              </div>
+              <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                <p class="text-slate-500 text-[10px]">SIMULATORS</p>
+                <p class="text-slate-200 font-semibold mt-0.5">GNS3, Cisco PT, EVE-NG</p>
+              </div>
+              <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                <p class="text-slate-500 text-[10px]">SECURITY HARDENING</p>
+                <p class="text-slate-200 font-semibold mt-0.5">ACLs / DAI / Snooping</p>
+              </div>
+            </div>
+
+            <!-- Packet Trace Visualizer -->
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/90 font-mono text-xs">
+              <div class="flex items-center justify-between text-slate-400 text-[11px] mb-2">
+                <span>HOP TRACE (HQ to Branch 01)</span>
+                <span class="text-cyan-400">RTT: 1.2ms</span>
+              </div>
+              <div class="space-y-1 text-slate-300 text-[11px]">
+                <div class="flex justify-between items-center text-emerald-400">
+                  <span>1. 192.168.10.1 (Router-on-Stick)</span>
+                  <span>[0.2ms]</span>
+                </div>
+                <div class="flex justify-between items-center text-cyan-400">
+                  <span>2. 10.0.0.1 (Edge eBGP Peer)</span>
+                  <span>[0.6ms]</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-300">
+                  <span>3. 172.16.1.1 (HQ Core OSPF Backbone)</span>
+                  <span>[1.2ms]</span>
+                </div>
+              </div>
+              <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
+                <span class="text-slate-400">Convergence Test</span>
+                <span class="text-emerald-400 font-bold flex items-center gap-1.5">
+                  <i class="fa-solid fa-check"></i> Sub-Second OK
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="about" class="py-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800/80">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-mono uppercase text-net-400 tracking-wider">PROFILE OVERVIEW</span>
+        <h2 class="text-3xl font-bold text-white mt-1">Professional Summary</h2>
+        <div class="w-12 h-1 bg-net-500 mx-auto mt-3 rounded-full"></div>
+      </div>
+
+      <div class="bg-net-card rounded-2xl border border-net-cardBorder p-6 sm:p-10 shadow-xl relative overflow-hidden">
+        <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-net-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          <div class="md:col-span-8 space-y-4">
+            <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+              Highly motivated and detail-oriented <span class="text-white font-semibold">Network Engineer</span> with hands-on lab experience in routing, switching, and systems administration. Proficient in designing and deploying enterprise network topologies using <span class="text-cyan-400">Cisco Packet Tracer</span> and <span class="text-cyan-400">GNS3</span>.
+            </p>
+            <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+              Possesses a strong understanding of TCP/IP architecture, subnetting, dynamic routing (<span class="text-white font-medium">OSPF, EIGRP, BGP</span>), and Layer 2 protocols (<span class="text-white font-medium">VLANs, STP, EtherChannel</span>). Eager to leverage rigorous troubleshooting skills and foundational knowledge of Windows and Linux administration to contribute effectively to a <span class="text-net-400 font-semibold">Network Operations Center (NOC)</span> or enterprise IT infrastructure team.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-2 text-xs font-mono">
+              <span class="px-3 py-1 bg-slate-900 text-slate-300 rounded border border-slate-800">Problem Solving & Root-Cause Analysis</span>
+              <span class="px-3 py-1 bg-slate-900 text-slate-300 rounded border border-slate-800">NOC Shift Readiness</span>
+              <span class="px-3 py-1 bg-slate-900 text-slate-300 rounded border border-slate-800">Traffic Engineering</span>
+            </div>
+          </div>
+
+          <!-- Highlight metrics -->
+          <div class="md:col-span-4 bg-slate-900/80 p-6 rounded-xl border border-slate-800 space-y-5">
+            <div>
+              <div class="text-2xl font-bold font-mono text-cyan-400">Layer 2 / Layer 3</div>
+              <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Core Competency</div>
+            </div>
+            <div class="h-px bg-slate-800"></div>
+            <div>
+              <div class="text-2xl font-bold font-mono text-emerald-400">Packet Tracer & GNS3</div>
+              <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Lab Simulation Focus</div>
+            </div>
+            <div class="h-px bg-slate-800"></div>
+            <div>
+              <div class="text-2xl font-bold font-mono text-indigo-400">Linux + Windows</div>
+              <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Server Administration</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="py-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800/80">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-mono uppercase text-net-400 tracking-wider">DOMAIN EXPERTISE</span>
+        <h2 class="text-3xl font-bold text-white mt-1">Technical Skills Matrix</h2>
+        <p class="text-slate-400 text-sm mt-2">Comprehensive stack categorized across OSI protocols, infrastructure routing, and systems.</p>
+        <div class="w-12 h-1 bg-net-500 mx-auto mt-3 rounded-full"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- 1. Network Architecture & Protocols -->
+        <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder hover:border-net-500/40 transition duration-300 group">
+          <div class="w-10 h-10 rounded-lg bg-net-500/10 border border-net-500/20 text-net-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-sitemap text-lg"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Network Architecture & Protocols</h3>
+          <p class="text-xs text-slate-400 mb-4">Core addressing, OSI model layers, and essential IP infrastructure services.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">TCP/IP & OSI</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">IPv4 / IPv6 Subnetting</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">VLSM & CIDR</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Topology Design</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">DNS & DHCP</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">TFTP, SNMP, NTP</span>
+          </div>
+        </div>
+
+        <!-- 2. Routing Technologies -->
+        <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder hover:border-net-500/40 transition duration-300 group">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-route text-lg"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Routing Technologies</h3>
+          <p class="text-xs text-slate-400 mb-4">Interior & exterior gateway protocols, path optimization, and aggregation.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Static & Default Routing</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Inter-VLAN (ROAS, SVI)</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">OSPFv2 & OSPFv3</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">EIGRP</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">eBGP (Multi-Homed)</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Route Summarization</span>
+          </div>
+        </div>
+
+        <!-- 3. Switching & Layer 2 -->
+        <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder hover:border-net-500/40 transition duration-300 group">
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-server text-lg"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Switching & Layer 2</h3>
+          <p class="text-xs text-slate-400 mb-4">Hardware switching, link aggregation, trunking and loop mitigation protocols.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Cisco Catalyst Switches</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">VLANs & 802.1Q</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">VTP Domains</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">STP / RSTP / PVST+</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">PortFast & BPDU Guard</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">EtherChannel (LACP/PAgP)</span>
+          </div>
+        </div>
+
+        <!-- 4. Network Security -->
+        <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder hover:border-net-500/40 transition duration-300 group">
+          <div class="w-10 h-10 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-shield-halved text-lg"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Network Security</h3>
+          <p class="text-xs text-slate-400 mb-4">Defense-in-depth access controls, address translation, and switchport hardening.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Standard & Extended ACLs</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">NAT / PAT</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Port Security (Sticky MAC)</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">DHCP Snooping</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Dynamic ARP Inspection (DAI)</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Layer 2 Hardening</span>
+          </div>
+        </div>
+
+        <!-- 5. Diagnostic Tools & Simulators -->
+        <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder hover:border-net-500/40 transition duration-300 group">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-microscope text-lg"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Diagnostic Tools & Simulators</h3>
+          <p class="text-xs text-slate-400 mb-4">Network emulation environments and packet-level inspection tools.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Cisco Packet Tracer</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">GNS3 & EVE-NG</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Wireshark Analysis</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Nmap Port Scanning</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">PuTTY & Serial Terminal</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Ping, Traceroute, Netstat</span>
+          </div>
+        </div>
+
+        <!-- 6. Systems Administration -->
+        <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder hover:border-net-500/40 transition duration-300 group">
+          <div class="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-terminal text-lg"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Systems Administration</h3>
+          <p class="text-xs text-slate-400 mb-4">Enterprise directory services, Unix scripting, storage, and host firewall management.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Windows Server (AD DS, GPO)</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">IIS & NTFS Permissions</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Linux (RHEL / Ubuntu)</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Bash Scripting</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">LVM, NFS & SAMBA</span>
+            <span class="px-2.5 py-1 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300">Systemd, UFW & Firewalld</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="projects" class="py-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800/80">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-mono uppercase text-net-400 tracking-wider">PRACTICAL LAB IMPLEMENTATION</span>
+        <h2 class="text-3xl font-bold text-white mt-1">Network Simulation Project</h2>
+        <p class="text-slate-400 text-sm mt-2">End-to-end design, routing topology, redundancy, and security implementation.</p>
+        <div class="w-12 h-1 bg-net-500 mx-auto mt-3 rounded-full"></div>
+      </div>
+
+      <!-- Featured Project Card -->
+      <div class="bg-net-card rounded-2xl border border-net-cardBorder overflow-hidden shadow-2xl">
+        <div class="p-6 sm:p-8 border-b border-slate-800/90 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/40">
+          <div>
+            <div class="flex items-center gap-2 font-mono text-xs text-net-400 mb-1">
+              <span class="w-2 h-2 rounded-full bg-net-400"></span>
+              <span>ENTERPRISE LAB ENVIRONMENT (GNS3 & CISCO PACKET TRACER)</span>
+            </div>
+            <h3 class="text-2xl font-bold text-white">
+              Enterprise Multi-Site Network Architecture Implementation
+            </h3>
+          </div>
+          <div class="flex items-center gap-2 text-xs font-mono">
+            <span class="px-3 py-1.5 rounded-lg bg-net-900/60 text-cyan-300 border border-cyan-800/40">
+              <i class="fa-solid fa-code-branch mr-1"></i> Multi-Site WAN + LAN
+            </span>
+            <span class="px-3 py-1.5 rounded-lg bg-emerald-950/60 text-emerald-300 border border-emerald-800/40">
+              <i class="fa-solid fa-shield mr-1"></i> Hardened
+            </span>
+          </div>
+        </div>
+
+        <div class="p-6 sm:p-8 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left: Implementation Details List -->
+            <div class="lg:col-span-7 space-y-5">
+              <h4 class="text-sm font-mono uppercase text-slate-400 tracking-wider">Key Engineering Objectives & Delivery:</h4>
+              
+              <div class="space-y-4">
+                <div class="flex gap-3">
+                  <div class="text-net-400 font-mono text-sm mt-0.5">01.</div>
+                  <div>
+                    <h5 class="text-white font-medium text-sm">Scalable Multi-Site Routing (OSPF & EIGRP)</h5>
+                    <p class="text-slate-400 text-xs mt-1 leading-relaxed">
+                      Designed and simulated a scalable corporate network connecting a headquarters to multiple remote branch offices using OSPF and EIGRP routing protocols for optimized path selection and sub-second convergence.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <div class="text-net-400 font-mono text-sm mt-0.5">02.</div>
+                  <div>
+                    <h5 class="text-white font-medium text-sm">Dual-Homed Edge & eBGP Peering</h5>
+                    <p class="text-slate-400 text-xs mt-1 leading-relaxed">
+                      Architected a dual-homed enterprise edge network utilizing external BGP (eBGP) for redundant ISP connectivity, manipulating route attributes to engineer precise inbound and outbound traffic flows.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <div class="text-net-400 font-mono text-sm mt-0.5">03.</div>
+                  <div>
+                    <h5 class="text-white font-medium text-sm">Inter-VLAN Departmental Segmentation (ROAS & Extended ACLs)</h5>
+                    <p class="text-slate-400 text-xs mt-1 leading-relaxed">
+                      Implemented inter-VLAN routing using a Router-on-a-Stick topology to securely segment HR, IT, and Finance departments, enforcing inter-departmental traffic policies via Extended Access Control Lists (ACLs).
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <div class="text-net-400 font-mono text-sm mt-0.5">04.</div>
+                  <div>
+                    <h5 class="text-white font-medium text-sm">Layer 2 Redundancy & EtherChannel Trunking</h5>
+                    <p class="text-slate-400 text-xs mt-1 leading-relaxed">
+                      Configured Layer 2 redundancy and loop prevention using Rapid Spanning Tree Protocol (RSTP) and aggregated switch links using EtherChannel (LACP) to increase backbone bandwidth.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <div class="text-net-400 font-mono text-sm mt-0.5">05.</div>
+                  <div>
+                    <h5 class="text-white font-medium text-sm">Edge NAT/PAT & Access Port Security</h5>
+                    <p class="text-slate-400 text-xs mt-1 leading-relaxed">
+                      Deployed Port Address Translation (PAT) on edge routers to allow secure internet access for internal subnets and implemented Port Security on access switches to mitigate unauthorized network access.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Interactive Topology Card -->
+            <div class="lg:col-span-5 bg-slate-950 p-5 rounded-xl border border-slate-800">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                <span class="text-xs font-mono text-cyan-400 flex items-center gap-2">
+                  <i class="fa-solid fa-diagram-project"></i> Topology Diagram (Live State)
+                </span>
+                <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+                  ACTIVE
+                </span>
+              </div>
+
+              <!-- Topology SVG Simulation -->
+              <div class="w-full bg-slate-900/60 rounded-lg p-4 border border-slate-800/80">
+                <svg viewBox="0 0 320 230" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Links -->
+                  <line x1="80" y1="50" x2="160" y2="50" stroke="#06b6d4" stroke-width="2" stroke-dasharray="3,3" />
+                  <line x1="240" y1="50" x2="160" y2="50" stroke="#06b6d4" stroke-width="2" stroke-dasharray="3,3" />
+                  
+                  <line x1="160" y1="50" x2="160" y2="120" stroke="#10b981" stroke-width="2" />
+                  
+                  <line x1="160" y1="120" x2="90" y2="190" stroke="#6366f1" stroke-width="2" />
+                  <line x1="160" y1="120" x2="160" y2="190" stroke="#6366f1" stroke-width="2" />
+                  <line x1="160" y1="120" x2="230" y2="190" stroke="#6366f1" stroke-width="2" />
+
+                  <!-- Nodes -->
+                  <!-- ISP 1 -->
+                  <circle cx="80" cy="50" r="16" fill="#0f172a" stroke="#0891b2" stroke-width="2" />
+                  <text x="80" y="53" text-anchor="middle" fill="#22d3ee" font-size="8" font-family="monospace">ISP-A</text>
+
+                  <!-- ISP 2 -->
+                  <circle cx="240" cy="50" r="16" fill="#0f172a" stroke="#0891b2" stroke-width="2" />
+                  <text x="240" y="53" text-anchor="middle" fill="#22d3ee" font-size="8" font-family="monospace">ISP-B</text>
+
+                  <!-- Edge Gateway (BGP/PAT) -->
+                  <rect x="135" y="38" width="50" height="24" rx="4" fill="#0891b2" />
+                  <text x="160" y="53" text-anchor="middle" fill="#ffffff" font-size="8" font-weight="bold" font-family="monospace">EDGE-R1</text>
+
+                  <!-- Core Switch (RSTP / LACP) -->
+                  <rect x="135" y="108" width="50" height="24" rx="4" fill="#10b981" />
+                  <text x="160" y="123" text-anchor="middle" fill="#ffffff" font-size="8" font-weight="bold" font-family="monospace">CORE-SW</text>
+
+                  <!-- VLAN 10 HR -->
+                  <circle cx="90" cy="190" r="14" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5" />
+                  <text x="90" y="193" text-anchor="middle" fill="#c7d2fe" font-size="7" font-family="monospace">VLAN 10</text>
+                  <text x="90" y="212" text-anchor="middle" fill="#94a3b8" font-size="7" font-family="monospace">HR</text>
+
+                  <!-- VLAN 20 IT -->
+                  <circle cx="160" cy="190" r="14" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5" />
+                  <text x="160" y="193" text-anchor="middle" fill="#c7d2fe" font-size="7" font-family="monospace">VLAN 20</text>
+                  <text x="160" y="212" text-anchor="middle" fill="#94a3b8" font-size="7" font-family="monospace">IT SEC</text>
+
+                  <!-- VLAN 30 Finance -->
+                  <circle cx="230" cy="190" r="14" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5" />
+                  <text x="230" y="193" text-anchor="middle" fill="#c7d2fe" font-size="7" font-family="monospace">VLAN 30</text>
+                  <text x="230" y="212" text-anchor="middle" fill="#94a3b8" font-size="7" font-family="monospace">FINANCE</text>
+                </svg>
+              </div>
+
+              <!-- Lab Config Highlights -->
+              <div class="mt-4 space-y-2 text-[11px] font-mono text-slate-400">
+                <div class="flex justify-between border-b border-slate-900 pb-1">
+                  <span>Routing:</span>
+                  <span class="text-slate-200">OSPF multi-area + eBGP multi-home</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-900 pb-1">
+                  <span>Access Control:</span>
+                  <span class="text-slate-200">Extended IP ACLs on SVI / ROAS</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-900 pb-1">
+                  <span>Redundancy:</span>
+                  <span class="text-slate-200">Rapid-PVST+ & LACP EtherChannel</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Switch Port:</span>
+                  <span class="text-slate-200">Port-Security violation shutdown</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cli" class="py-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800/80">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="text-xs font-mono uppercase text-net-400 tracking-wider">LIVE LAB CONSOLE</span>
+        <h2 class="text-3xl font-bold text-white mt-1">Interactive Diagnostic Console</h2>
+        <p class="text-slate-400 text-sm mt-2">Try commands: <code class="text-net-400">help</code>, <code class="text-net-400">show ip route</code>, <code class="text-net-400">ping 8.8.8.8</code>, <code class="text-net-400">show vlan</code>, <code class="text-net-400">clear</code></p>
+      </div>
+
+      <div class="bg-black/90 rounded-2xl border border-slate-800 shadow-2xl overflow-hidden font-mono max-w-4xl mx-auto">
+        <!-- Terminal Header -->
+        <div class="bg-slate-900 px-4 py-3 flex items-center justify-between border-b border-slate-800 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+            <span class="text-slate-400 ml-2">arpan@arwk.in: /noc/cisco-console</span>
+          </div>
+          <span class="text-slate-500 text-[11px]">TTY: /dev/ttyS0 (9600 8N1)</span>
+        </div>
+
+        <!-- Terminal Body -->
+        <div id="cli-output" class="p-5 text-xs sm:text-sm text-slate-300 space-y-2 h-72 overflow-y-auto custom-scrollbar">
+          <div class="text-net-400 font-bold">Cisco IOS Software, C7200 Software (C7200-ADVIPSERVICESK9-M), Version 15.2</div>
+          <div class="text-slate-400">Connected to Enterprise Multi-Site Core Router (arwk.in). Type '<span class="text-white">help</span>' for available commands.</div>
+        </div>
+
+        <!-- Terminal Input -->
+        <div class="bg-slate-950 px-4 py-3 border-t border-slate-800 flex items-center gap-2 text-xs sm:text-sm">
+          <span class="text-emerald-400 font-bold font-mono">arpan-gw#</span>
+          <input id="cli-input" type="text" autocomplete="off" placeholder="Type a command (e.g. show ip route, ping, show vlan)..." 
+                 class="w-full bg-transparent text-slate-100 focus:outline-none font-mono placeholder:text-slate-600">
+          <button id="cli-send" class="px-3 py-1 bg-net-900 text-net-400 border border-net-600/40 rounded text-xs hover:bg-net-800 transition">
+            EXEC
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="education" class="py-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800/80">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-mono uppercase text-net-400 tracking-wider">ACADEMIC & PROFESSIONAL PATH</span>
+        <h2 class="text-3xl font-bold text-white mt-1">Education & Qualifications</h2>
+        <p class="text-slate-400 text-sm mt-2">Continuous academic foundation combined with dedicated network engineering specialization.</p>
+        <div class="w-12 h-1 bg-net-500 mx-auto mt-3 rounded-full"></div>
+      </div>
+
+      <div class="relative border-l border-slate-800 ml-4 md:ml-32 space-y-10">
+
+        <!-- 1. Advance Diploma in Hardware & Networking Engineering -->
+        <div class="relative pl-8 group">
+          <div class="absolute -left-2.5 top-1.5 w-5 h-5 rounded-full bg-slate-900 border-2 border-net-400 flex items-center justify-center group-hover:scale-125 transition-transform">
+            <span class="w-1.5 h-1.5 rounded-full bg-net-400 animate-ping"></span>
+          </div>
+
+          <div class="bg-net-card p-6 rounded-xl border border-net-500/30 shadow-lg">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+              <h3 class="text-lg font-bold text-white group-hover:text-net-400 transition-colors">
+                Advance Diploma in Hardware & Networking Engineering
+              </h3>
+              <span class="text-xs font-mono px-2.5 py-1 rounded bg-net-500/10 text-net-400 border border-net-500/30">
+                Expected 2026
+              </span>
+            </div>
+            <p class="text-sm font-medium text-slate-300">The George Telegraph Training Institute</p>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              In-depth specialization in Cisco enterprise routing & switching, subnet design, system administration (Linux & Windows Server), and network security. Hands-on deployment in lab environments.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2. Advance Diploma in GIS & Remote Sensing -->
+        <div class="relative pl-8 group">
+          <div class="absolute -left-2.5 top-1.5 w-5 h-5 rounded-full bg-slate-900 border-2 border-slate-600 flex items-center justify-center group-hover:scale-125 transition-transform">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+          </div>
+
+          <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder shadow-md hover:border-slate-700 transition">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+              <h3 class="text-lg font-bold text-white">
+                Advance Diploma in GIS & Remote Sensing
+              </h3>
+              <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-800 text-slate-300">
+                2024 | 74.20%
+              </span>
+            </div>
+            <p class="text-sm font-medium text-slate-300">Vidyasagar University</p>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Spatial data modeling, satellite mapping, topological structures, and computational geography analysis.
+            </p>
+          </div>
+        </div>
+
+        <!-- 3. M.Sc. in Agronomy -->
+        <div class="relative pl-8 group">
+          <div class="absolute -left-2.5 top-1.5 w-5 h-5 rounded-full bg-slate-900 border-2 border-slate-600 flex items-center justify-center group-hover:scale-125 transition-transform">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+          </div>
+
+          <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder shadow-md hover:border-slate-700 transition">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+              <h3 class="text-lg font-bold text-white">
+                M.Sc. in Agronomy
+              </h3>
+              <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-800 text-slate-300">
+                2023 | 8.24 CGPA
+              </span>
+            </div>
+            <p class="text-sm font-medium text-slate-300">Vidyasagar University</p>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Advanced scientific research methodology, statistical analysis, resource optimization, and quantitative evaluations.
+            </p>
+          </div>
+        </div>
+
+        <!-- 4. B.Sc. in Agriculture -->
+        <div class="relative pl-8 group">
+          <div class="absolute -left-2.5 top-1.5 w-5 h-5 rounded-full bg-slate-900 border-2 border-slate-600 flex items-center justify-center group-hover:scale-125 transition-transform">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+          </div>
+
+          <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder shadow-md hover:border-slate-700 transition">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+              <h3 class="text-lg font-bold text-white">
+                B.Sc. in Agriculture
+              </h3>
+              <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-800 text-slate-300">
+                2021 | 7.39 CGPA
+              </span>
+            </div>
+            <p class="text-sm font-medium text-slate-300">CSJMU University</p>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Undergraduate program emphasizing data observation, experimental trials, and systematic methodology.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="contact" class="py-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800/80">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-mono uppercase text-net-400 tracking-wider">GET IN TOUCH</span>
+        <h2 class="text-3xl font-bold text-white mt-1">Initiate Connection</h2>
+        <p class="text-slate-400 text-sm mt-2">Available for Network Engineering, NOC support, and Systems roles.</p>
+        <div class="w-12 h-1 bg-net-500 mx-auto mt-3 rounded-full"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+
+        <!-- Email Box -->
+        <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder text-center flex flex-col items-center justify-between group hover:border-net-400/40 transition">
+          <div class="w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center mb-4 text-xl">
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+          <div>
+            <h4 class="text-white font-medium mb-1">Direct Email</h4>
+            <p class="text-xs text-slate-400 mb-4">x@arwk.in</p>
+          </div>
+          <div class="w-full flex gap-2">
+            <a href="mailto:x@arwk.in" class="flex-1 py-2 px-3 text-xs rounded bg-net-500 hover:bg-net-400 text-slate-950 font-semibold transition">
+              Send Email
+            </a>
+            <button onclick="copyEmail(this)" class="px-3 py-2 text-xs rounded bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition" title="Copy email address">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Location Box -->
+        <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder text-center flex flex-col items-center justify-between group hover:border-rose-400/40 transition">
+          <div class="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mb-4 text-xl">
+            <i class="fa-solid fa-location-dot"></i>
+          </div>
+          <div>
+            <h4 class="text-white font-medium mb-1">Current Base</h4>
+            <p class="text-xs text-slate-400 mb-4">Contai, West Bengal, India</p>
+          </div>
+          <div class="w-full">
+            <span class="inline-block py-2 px-3 text-xs rounded bg-slate-900 text-slate-300 border border-slate-800 w-full font-mono">
+              IST (UTC +5:30)
+            </span>
+          </div>
+        </div>
+
+        <!-- Domain Box -->
+        <div class="bg-net-card p-6 rounded-xl border border-net-cardBorder text-center flex flex-col items-center justify-between group hover:border-emerald-400/40 transition">
+          <div class="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4 text-xl">
+            <i class="fa-solid fa-globe"></i>
+          </div>
+          <div>
+            <h4 class="text-white font-medium mb-1">Web Presence</h4>
+            <p class="text-xs text-slate-400 mb-4">arwk.in</p>
+          </div>
+          <div class="w-full">
+            <a href="https://arwk.in" target="_blank" rel="noopener noreferrer" class="block py-2 px-3 text-xs rounded bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 font-mono transition">
+              Visit arwk.in <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Message Notification Box -->
+      <div id="toast" class="fixed bottom-6 right-6 hidden bg-slate-900 text-net-400 border border-net-500/40 px-4 py-3 rounded-xl shadow-2xl text-xs font-mono z-50 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toast-msg">Copied to clipboard!</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-net-card/90 border-t border-slate-800/80 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span>arwk.in &bull; Arpan Manna</span>
+      </div>
+      <div class="text-slate-500 text-center sm:text-right">
+        Engineered for high availability &bull; OSPF / BGP / Layer 2
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile navigation toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navLinks = document.querySelectorAll('.mobile-nav-link');
+
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+      });
+    });
+
+    // Toast message handler
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      toastMsg.textContent = message;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    // Copy Email fallback helper
+    function copyEmail(button) {
+      const email = 'x@arwk.in';
+      const tempInput = document.createElement('input');
+      tempInput.value = email;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast('Email (x@arwk.in) copied to clipboard!');
+      } catch (err) {
+        showToast('Unable to auto-copy. Please email: x@arwk.in');
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    // Diagnostic CLI Simulator Logic
+    const cliInput = document.getElementById('cli-input');
+    const cliOutput = document.getElementById('cli-output');
+    const cliSend = document.getElementById('cli-send');
+
+    const commands = {
+      'help': `Available CLI commands:
+  - help              : List available simulation commands
+  - show ip route     : Display simulated routing table
+  - show vlan         : Show configured VLAN status & ports
+  - ping <host/ip>    : Send ICMP echo requests
+  - traceroute <ip>   : Trace path across multi-site topology
+  - whoami            : Show engineer identity & NOC credentials
+  - clear             : Clear the terminal output`,
+      
+      'whoami': `Engineer: Arpan Manna
+Role: Network Engineer (Routing, Switching & Infrastructure)
+Domain: arwk.in
+Contact: x@arwk.in
+Location: Contai, West Bengal, India`,
+
+      'show ip route': `Codes: C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+
+Gateway of last resort is 10.0.0.1 to network 0.0.0.0
+
+B*    0.0.0.0/0 [20/0] via 10.0.0.1, 04:22:15 (eBGP Dual-Homed)
+C     192.168.10.0/24 is directly connected, GigabitEthernet0/0.10 (HR)
+C     192.168.20.0/24 is directly connected, GigabitEthernet0/0.20 (IT)
+C     192.168.30.0/24 is directly connected, GigabitEthernet0/0.30 (Finance)
+O     172.16.0.0/16 [110/2] via 172.16.1.1, 06:14:02, GigabitEthernet0/1 (HQ-Backbone)
+D     192.168.100.0/24 [90/30720] via 172.16.2.2, GigabitEthernet0/2 (Branch-01)`,
+
+      'show vlan': `VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Gi0/4 - Gi0/24
+10   HR_Department                    active    Gi0/1
+20   IT_Infrastructure                active    Gi0/2
+30   Finance_Accounting               active    Gi0/3
+99   Native_Management                active    Po1 (LACP)`,
+
+      'clear': '__CLEAR__'
+    };
+
+    function handleCommand() {
+      const rawCmd = cliInput.value.trim();
+      if (!rawCmd) return;
+
+      const cmd = rawCmd.toLowerCase();
+
+      // Print the typed prompt
+      const promptLine = document.createElement('div');
+      promptLine.className = 'text-cyan-400 font-bold';
+      promptLine.textContent = `arpan-gw# ${rawCmd}`;
+      cliOutput.appendChild(promptLine);
+
+      if (cmd === 'clear') {
+        cliOutput.innerHTML = '';
+        cliInput.value = '';
+        return;
+      }
+
+      const resLine = document.createElement('div');
+      resLine.className = 'text-slate-300 whitespace-pre-wrap';
+
+      if (cmd.startsWith('ping')) {
+        const target = rawCmd.split(' ')[1] || '8.8.8.8';
+        resLine.textContent = `Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to ${target}, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/2/3 ms`;
+      } else if (cmd.startsWith('traceroute')) {
+        const target = rawCmd.split(' ')[1] || '172.16.1.1';
+        resLine.textContent = `Tracing route to ${target}...
+  1 192.168.10.1 (ROAS GW) 0.320 ms 0.280 ms 0.290 ms
+  2 10.0.0.1 (Edge eBGP Peer) 0.540 ms 0.510 ms 0.490 ms
+  3 ${target} (HQ Core Backbone) 1.120 ms 1.090 ms 1.050 ms`;
+      } else if (commands[cmd]) {
+        resLine.textContent = commands[cmd];
+      } else {
+        resLine.className = 'text-rose-400';
+        resLine.textContent = `% Invalid input detected at '^' marker. Type 'help' for commands list.`;
+      }
+
+      cliOutput.appendChild(resLine);
+      cliInput.value = '';
+      cliOutput.scrollTop = cliOutput.scrollHeight;
+    }
+
+    cliInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        handleCommand();
+      }
+    });
+
+    cliSend.addEventListener('click', handleCommand);
+  </script>
+</body>
+</html>
