@@ -3,25 +3,284 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blank Screen</title>
+  <title>Blue Screen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Reset margins, paddings, and ensure full viewport coverage without scrollbars */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     html, body {
-      width: 100vw;
-      height: 100vh;
-      min-height: 100%;
-      background-color: #000000;
-      overflow: hidden; /* Eliminates scrollbars */
-      user-select: none; /* Prevents text cursor/selection highlights */
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* Standard modern Windows BSOD Blue */
+    .bsod-bg {
+      background-color: #0078d7;
+    }
+
+    /* Classic Pure Blue */
+    .pure-blue-bg {
+      background-color: #0000ff;
+    }
+
+    /* Floating control bar auto-dim */
+    .controls-panel {
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
   </style>
 </head>
-<body>
+<body id="screenContainer" class="bsod-bg text-white w-screen h-screen flex flex-col justify-between p-8 sm:p-14 md:p-20 lg:p-28 transition-colors duration-200 cursor-default">
+
+  <!-- Interactive Controls Bar (Top Right) -->
+  <header class="fixed top-4 right-4 z-50 flex items-center gap-2 bg-black/40 backdrop-blur-md px-3.5 py-2 rounded-full border border-white/20 shadow-lg text-xs md:text-sm controls-panel hover:opacity-100 opacity-70">
+    <!-- Mode Toggle Button -->
+    <button id="toggleModeBtn" class="px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-white/40">
+      <svg id="modeIconBsod" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+      </svg>
+      <span id="modeText">Switch to Pure Blue</span>
+    </button>
+
+    <!-- Restart / Reset Progress Button -->
+    <button id="restartBtn" title="Reset Percentage Counter" class="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition focus:outline-none">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+      </svg>
+    </button>
+
+    <!-- Fullscreen Toggle Button -->
+    <button id="fullscreenBtn" title="Toggle Fullscreen (F11)" class="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition focus:outline-none">
+      <svg id="fsEnterIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0 0l-5-5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+      </svg>
+      <svg id="fsExitIcon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </header>
+
+  <!-- BSOD Content Container -->
+  <main id="bsodContent" class="flex flex-col justify-between h-full max-w-5xl select-none">
+    <section>
+      <!-- Sad Emoticon -->
+      <div class="text-7xl sm:text-8xl md:text-9xl font-light tracking-tight leading-none mb-6 md:mb-10">: (</div>
+
+      <!-- Main Headline -->
+      <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light leading-relaxed mb-6 md:mb-8 max-w-4xl">
+        Your PC ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.
+      </h1>
+
+      <!-- Progress Percentage -->
+      <p class="text-xl sm:text-2xl md:text-3xl font-light tracking-wide mb-8">
+        <span id="percentText">0</span>% complete
+      </p>
+    </section>
+
+    <!-- Bottom Error Details & QR Code -->
+    <footer class="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 pt-4">
+      <!-- High-fidelity Scalable SVG QR Code (Clean & Self-contained) -->
+      <div class="bg-white p-2.5 rounded-none shadow-sm flex-shrink-0">
+        <svg class="w-28 h-28 sm:w-32 sm:h-32 text-black" viewBox="0 0 33 33" fill="currentColor">
+          <!-- Outer border/position anchors -->
+          <!-- Top Left Anchor -->
+          <rect x="0" y="0" width="7" height="7" />
+          <rect x="1" y="1" width="5" height="5" fill="#ffffff" />
+          <rect x="2" y="2" width="3" height="3" />
+          
+          <!-- Top Right Anchor -->
+          <rect x="26" y="0" width="7" height="7" />
+          <rect x="27" y="1" width="5" height="5" fill="#ffffff" />
+          <rect x="28" y="2" width="3" height="3" />
+
+          <!-- Bottom Left Anchor -->
+          <rect x="0" y="26" width="7" height="7" />
+          <rect x="1" y="27" width="5" height="5" fill="#ffffff" />
+          <rect x="2" y="28" width="3" height="3" />
+
+          <!-- Data patterns / pixel styling -->
+          <rect x="8" y="2" width="2" height="1" />
+          <rect x="12" y="1" width="2" height="2" />
+          <rect x="16" y="0" width="1" height="3" />
+          <rect x="19" y="2" width="3" height="1" />
+          <rect x="23" y="1" width="1" height="2" />
+
+          <rect x="9" y="4" width="1" height="3" />
+          <rect x="11" y="5" width="3" height="1" />
+          <rect x="17" y="4" width="2" height="2" />
+          <rect x="21" y="5" width="2" height="1" />
+
+          <rect x="0" y="9" width="3" height="2" />
+          <rect x="5" y="8" width="2" height="2" />
+          <rect x="8" y="10" width="2" height="2" />
+          <rect x="12" y="8" width="1" height="3" />
+          <rect x="15" y="9" width="3" height="1" />
+          <rect x="20" y="8" width="2" height="2" />
+          <rect x="24" y="9" width="3" height="1" />
+          <rect x="29" y="8" width="2" height="3" />
+
+          <rect x="2" y="13" width="2" height="2" />
+          <rect x="6" y="12" width="3" height="1" />
+          <rect x="10" y="14" width="4" height="2" />
+          <rect x="16" y="12" width="1" height="3" />
+          <rect x="19" y="13" width="3" height="2" />
+          <rect x="25" y="12" width="2" height="1" />
+          <rect x="28" y="14" width="3" height="2" />
+
+          <rect x="1" y="17" width="3" height="2" />
+          <rect x="6" y="18" width="2" height="1" />
+          <rect x="9" y="17" width="2" height="2" />
+          <rect x="13" y="18" width="3" height="2" />
+          <rect x="18" y="17" width="2" height="1" />
+          <rect x="22" y="18" width="3" height="2" />
+          <rect x="27" y="17" width="2" height="2" />
+
+          <rect x="3" y="21" width="3" height="2" />
+          <rect x="8" y="21" width="1" height="3" />
+          <rect x="11" y="22" width="3" height="1" />
+          <rect x="16" y="21" width="2" height="2" />
+          <rect x="20" y="23" width="2" height="1" />
+          <rect x="24" y="21" width="3" height="2" />
+          <rect x="29" y="22" width="2" height="2" />
+
+          <!-- Bottom right data matrix -->
+          <rect x="8" y="26" width="3" height="1" />
+          <rect x="13" y="27" width="2" height="2" />
+          <rect x="17" y="26" width="1" height="3" />
+          <rect x="20" y="27" width="4" height="2" />
+          <rect x="26" y="26" width="2" height="1" />
+          <rect x="29" y="28" width="3" height="2" />
+        </svg>
+      </div>
+
+      <!-- Support / Stop code information -->
+      <div class="text-xs sm:text-sm font-light space-y-1.5 text-white/95">
+        <p>For more information about this issue and possible fixes, visit https://www.windows.com/stopcode</p>
+        <p class="pt-1">If you call a support person, give them this info:</p>
+        <p class="font-normal tracking-wide">Stop code: <span id="stopCodeText" class="font-semibold uppercase tracking-wider">CRITICAL_PROCESS_DIED</span></p>
+        <p class="text-white/80">What failed: <span id="failedFileText" class="font-mono text-xs">ntoskrnl.exe</span></p>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // State management
+    let isPureBlue = false;
+    let progress = 0;
+    let progressInterval = null;
+
+    const stopCodes = [
+      { code: "CRITICAL_PROCESS_DIED", file: "ntoskrnl.exe" },
+      { code: "SYSTEM_SERVICE_EXCEPTION", file: "win32kbase.sys" },
+      { code: "IRQL_NOT_LESS_OR_EQUAL", file: "hal.dll" },
+      { code: "KERNEL_SECURITY_CHECK_FAILURE", file: "fltmgr.sys" },
+      { code: "DPC_WATCHDOG_VIOLATION", file: "storahci.sys" }
+    ];
+
+    // DOM Elements
+    const body = document.getElementById("screenContainer");
+    const bsodContent = document.getElementById("bsodContent");
+    const toggleModeBtn = document.getElementById("toggleModeBtn");
+    const modeText = document.getElementById("modeText");
+    const percentText = document.getElementById("percentText");
+    const stopCodeText = document.getElementById("stopCodeText");
+    const failedFileText = document.getElementById("failedFileText");
+    const restartBtn = document.getElementById("restartBtn");
+    const fullscreenBtn = document.getElementById("fullscreenBtn");
+    const fsEnterIcon = document.getElementById("fsEnterIcon");
+    const fsExitIcon = document.getElementById("fsExitIcon");
+
+    // Dynamic Progress Simulator
+    function startProgress() {
+      if (progressInterval) clearInterval(progressInterval);
+      progress = 0;
+      percentText.textContent = progress;
+
+      // Random stop code pick
+      const randomStop = stopCodes[Math.floor(Math.random() * stopCodes.length)];
+      stopCodeText.textContent = randomStop.code;
+      failedFileText.textContent = randomStop.file;
+
+      progressInterval = setInterval(() => {
+        if (progress < 100) {
+          // Increment smoothly with realistic irregular pauses
+          const inc = Math.floor(Math.random() * 8) + 1;
+          progress = Math.min(100, progress + inc);
+          percentText.textContent = progress;
+        } else {
+          clearInterval(progressInterval);
+        }
+      }, 700);
+    }
+
+    // Mode Toggle (BSOD vs Pure Solid Blue)
+    function setMode(pure) {
+      isPureBlue = pure;
+      if (isPureBlue) {
+        bsodContent.classList.add("hidden");
+        body.classList.remove("bsod-bg");
+        body.classList.add("pure-blue-bg");
+        modeText.textContent = "Switch to BSOD Screen";
+      } else {
+        bsodContent.classList.remove("hidden");
+        body.classList.remove("pure-blue-bg");
+        body.classList.add("bsod-bg");
+        modeText.textContent = "Switch to Pure Blue";
+      }
+    }
+
+    toggleModeBtn.addEventListener("click", () => {
+      setMode(!isPureBlue);
+    });
+
+    restartBtn.addEventListener("click", () => {
+      startProgress();
+    });
+
+    // Fullscreen Support
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    fullscreenBtn.addEventListener("click", toggleFullScreen);
+
+    document.addEventListener("fullscreenchange", () => {
+      const isFs = Boolean(document.fullscreenElement);
+      fsEnterIcon.classList.toggle("hidden", isFs);
+      fsExitIcon.classList.toggle("hidden", !isFs);
+    });
+
+    // Keyboard shortcuts: Space/B toggles mode, R resets progress, F toggles fullscreen
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "b" || e.key === "B") {
+        setMode(!isPureBlue);
+      } else if (e.key === "r" || e.key === "R") {
+        startProgress();
+      } else if (e.key === "f" || e.key === "F") {
+        toggleFullScreen();
+      }
+    });
+
+    // Auto-start error progress on page load
+    window.addEventListener("DOMContentLoaded", () => {
+      startProgress();
+    });
+  </script>
 </body>
 </html>
